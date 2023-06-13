@@ -348,7 +348,7 @@ implements Constants, TreeNode
 	 */
 	public OSCMessage freeMsg()
 	{
-		return new OSCMessage( "/n_free", new Object[] { new Integer( getNodeID() )});
+		return new OSCMessage( "/n_free", new Object[] { Integer.valueOf( getNodeID() )});
 	}
 
 	/**
@@ -401,7 +401,7 @@ implements Constants, TreeNode
 	 */
 	public OSCMessage runMsg( boolean flag )
 	{
-		return new OSCMessage( "/n_run", new Object[] { new Integer( getNodeID() ), new Integer( flag ? 1 : 0 )});
+		return new OSCMessage( "/n_run", new Object[] { Integer.valueOf( getNodeID() ), Integer.valueOf( flag ? 1 : 0 )});
 	}
 
 	/**
@@ -436,7 +436,7 @@ implements Constants, TreeNode
 	 */
 	public OSCMessage setMsg( String ctrlName, float value )
 	{
-		return new OSCMessage( "/n_set", new Object[] { new Integer( getNodeID() ), ctrlName, new Float( value )});
+		return new OSCMessage( "/n_set", new Object[] { Integer.valueOf( getNodeID() ), ctrlName, Float.valueOf( value )});
 	}
 
 	/**
@@ -471,7 +471,7 @@ implements Constants, TreeNode
 	 */
 	public OSCMessage setMsg( int ctrlIdx, float value )
 	{
-		return new OSCMessage( "/n_set", new Object[] { new Integer( getNodeID() ), new Integer( ctrlIdx ), new Float( value )});
+		return new OSCMessage( "/n_set", new Object[] { Integer.valueOf( getNodeID() ), Integer.valueOf( ctrlIdx ), Float.valueOf( value )});
 	}
 
 	/**
@@ -511,11 +511,11 @@ implements Constants, TreeNode
 	public OSCMessage setMsg( String[] ctrlNames, float[] values )
 	{
 		final Object[] args = new Object[ (ctrlNames.length << 1) + 1 ];
-		args[ 0 ]			= new Integer( getNodeID() );
+		args[ 0 ]			= Integer.valueOf( getNodeID() );
 		
 		for( int i = 0, j = 1; i < ctrlNames.length; i++ ) {
 			args[ j++ ] = ctrlNames[ i ];
-			args[ j++ ] = new Float( values[ i ]);
+			args[ j++ ] = Float.valueOf( values[ i ]);
 		}
 	
 		return( new OSCMessage( "/n_set", args ));
@@ -558,11 +558,11 @@ implements Constants, TreeNode
 	public OSCMessage setMsg( int[] ctrlIndices, float[] values )
 	{
 		final Object[] args = new Object[ (ctrlIndices.length << 1) + 1 ];
-		args[ 0 ]			= new Integer( getNodeID() );
+		args[ 0 ]			= Integer.valueOf( getNodeID() );
 		
 		for( int i = 0, j = 1; i < ctrlIndices.length; i++ ) {
-			args[ j++ ] = new Integer( ctrlIndices[ i ]);
-			args[ j++ ] = new Float( values[ i ]);
+			args[ j++ ] = Integer.valueOf( ctrlIndices[ i ]);
+			args[ j++ ] = Float.valueOf( values[ i ]);
 		}
 	
 		return( new OSCMessage( "/n_set", args ));
@@ -607,12 +607,12 @@ implements Constants, TreeNode
 	public OSCMessage fillMsg( String[] ctrlNames, int[] numControls, float[] values )
 	{
 		final Object[] args = new Object[ ctrlNames.length * 3 + 1 ];
-		args[ 0 ]			= new Integer( getNodeID() );
+		args[ 0 ]			= Integer.valueOf( getNodeID() );
 		
 		for( int i = 0, j = 1; i < ctrlNames.length; i++ ) {
 			args[ j++ ]	= ctrlNames[ i ];
-			args[ j++ ]	= new Integer( numControls[ i ]);
-			args[ j++ ] = new Float( values[ i ]);
+			args[ j++ ]	= Integer.valueOf( numControls[ i ]);
+			args[ j++ ] = Float.valueOf( values[ i ]);
 		}
 	
 		return( new OSCMessage( "/n_fill", args ));
@@ -657,12 +657,12 @@ implements Constants, TreeNode
 	public OSCMessage fillMsg( int[] ctrlIndices, int[] numControls, float[] values )
 	{
 		final Object[] args = new Object[ ctrlIndices.length * 3 + 1 ];
-		args[ 0 ]			= new Integer( getNodeID() );
+		args[ 0 ]			= Integer.valueOf( getNodeID() );
 		
 		for( int i = 0, j = 1; i < ctrlIndices.length; i++ ) {
-			args[ j++ ]	= new Integer( ctrlIndices[ i ]);
-			args[ j++ ]	= new Integer( numControls[ i ]);
-			args[ j++ ] = new Float( values[ i ]);
+			args[ j++ ]	= Integer.valueOf( ctrlIndices[ i ]);
+			args[ j++ ]	= Integer.valueOf( numControls[ i ]);
+			args[ j++ ] = Float.valueOf( values[ i ]);
 		}
 	
 		return( new OSCMessage( "/n_fill", args ));
@@ -715,14 +715,14 @@ implements Constants, TreeNode
 		}
 		 
 		args		= new Object[ numArgs ];
-		args[ 0 ]	= new Integer( getNodeID() );
+		args[ 0 ]	= Integer.valueOf( getNodeID() );
 		
 		for( int i = 0, j = 1; i < ctrlNames.length; i++ ) {
 			args[ j++ ]	= ctrlNames[ i ];
 			subV		= values[ i ];
-			args[ j++ ] = new Integer( subV.length );
+			args[ j++ ] = Integer.valueOf( subV.length );
 			for( int k = 0; k < subV.length; k++ ) {
-				args[ j++ ] = new Float( subV[ k ]);
+				args[ j++ ] = Float.valueOf( subV[ k ]);
 			}
 		}
 	
@@ -776,14 +776,14 @@ implements Constants, TreeNode
 		}
 		 
 		args		= new Object[ numArgs ];
-		args[ 0 ]	= new Integer( getNodeID() );
+		args[ 0 ]	= Integer.valueOf( getNodeID() );
 		
 		for( int i = 0, j = 1; i < ctrlIndices.length; i++ ) {
-			args[ j++ ]	= new Integer( ctrlIndices[ i ]);
+			args[ j++ ]	= Integer.valueOf( ctrlIndices[ i ]);
 			subV		= values[ i ];
-			args[ j++ ] = new Integer( subV.length );
+			args[ j++ ] = Integer.valueOf( subV.length );
 			for( int k = 0; k < subV.length; k++ ) {
-				args[ j++ ] = new Float( subV[ k ]);
+				args[ j++ ] = Float.valueOf( subV[ k ]);
 			}
 		}
 	
@@ -832,11 +832,11 @@ implements Constants, TreeNode
 	public OSCMessage mapMsg( int[] ctrlIndices, int[] busIndices )
 	{
 		final Object[] args = new Object[ (ctrlIndices.length << 1) + 1 ];
-		args[ 0 ]			= new Integer( getNodeID() );
+		args[ 0 ]			= Integer.valueOf( getNodeID() );
 		
 		for( int i = 0, j = 1; i < ctrlIndices.length; i++ ) {
-			args[ j++ ] = new Integer( ctrlIndices[ i ]);
-			args[ j++ ] = new Integer( busIndices[ i ]);
+			args[ j++ ] = Integer.valueOf( ctrlIndices[ i ]);
+			args[ j++ ] = Integer.valueOf( busIndices[ i ]);
 		}
 	
 		return( new OSCMessage( "/n_map", args ));
@@ -884,11 +884,11 @@ implements Constants, TreeNode
 	public OSCMessage mapMsg( String[] ctrlNames, int[] busIndices )
 	{
 		final Object[] args = new Object[ (ctrlNames.length << 1) + 1 ];
-		args[ 0 ]			= new Integer( getNodeID() );
+		args[ 0 ]			= Integer.valueOf( getNodeID() );
 		
 		for( int i = 0, j = 1; i < ctrlNames.length; i++ ) {
 			args[ j++ ] = ctrlNames[ i ];
-			args[ j++ ] = new Integer( busIndices[ i ]);
+			args[ j++ ] = Integer.valueOf( busIndices[ i ]);
 		}
 	
 		return( new OSCMessage( "/n_map", args ));
@@ -936,11 +936,11 @@ implements Constants, TreeNode
 	public OSCMessage mapMsg( int[] ctrlIndices, Bus[] busses )
 	{
 		final Object[] args = new Object[ (ctrlIndices.length << 1) + 1 ];
-		args[ 0 ]			= new Integer( getNodeID() );
+		args[ 0 ]			= Integer.valueOf( getNodeID() );
 		
 		for( int i = 0, j = 1; i < ctrlIndices.length; i++ ) {
-			args[ j++ ] = new Integer( ctrlIndices[ i ]);
-			args[ j++ ] = new Integer( busses[ i ] == null ? -1 : busses[ i ].getIndex() );
+			args[ j++ ] = Integer.valueOf( ctrlIndices[ i ]);
+			args[ j++ ] = Integer.valueOf( busses[ i ] == null ? -1 : busses[ i ].getIndex() );
 		}
 	
 		return( new OSCMessage( "/n_map", args ));
@@ -988,11 +988,11 @@ implements Constants, TreeNode
 	public OSCMessage mapMsg( String[] ctrlNames, Bus[] busses )
 	{
 		final Object[] args = new Object[ (ctrlNames.length << 1) + 1 ];
-		args[ 0 ]			= new Integer( getNodeID() );
+		args[ 0 ]			= Integer.valueOf( getNodeID() );
 		
 		for( int i = 0, j = 1; i < ctrlNames.length; i++ ) {
 			args[ j++ ] = ctrlNames[ i ];
-			args[ j++ ] = new Integer( busses[ i ] == null ? -1 : busses[ i ].getIndex() );
+			args[ j++ ] = Integer.valueOf( busses[ i ] == null ? -1 : busses[ i ].getIndex() );
 		}
 	
 		return( new OSCMessage( "/n_map", args ));
@@ -1013,8 +1013,8 @@ implements Constants, TreeNode
 	public OSCMessage mapMsg( String ctrlName, Bus bus )
 	{
 		return( new OSCMessage( "/n_map", new Object[] {
-			new Integer( getNodeID() ), ctrlName,
-			new Integer( bus == null ? -1 : bus.getIndex() )}));
+			Integer.valueOf( getNodeID() ), ctrlName,
+			Integer.valueOf( bus == null ? -1 : bus.getIndex() )}));
 	}
 	
 	/**
@@ -1063,12 +1063,12 @@ implements Constants, TreeNode
 	public OSCMessage mapnMsg( int[] ctrlIndices, int[] busIndices, int[] numControls )
 	{
 		final Object[] args = new Object[ ctrlIndices.length * 3 + 1 ];
-		args[ 0 ]			= new Integer( getNodeID() );
+		args[ 0 ]			= Integer.valueOf( getNodeID() );
 		
 		for( int i = 0, j = 1; i < ctrlIndices.length; i++ ) {
-			args[ j++ ] = new Integer( ctrlIndices[ i ]);
-			args[ j++ ] = new Integer( busIndices[ i ]);
-			args[ j++ ] = new Integer( numControls[ i ]);
+			args[ j++ ] = Integer.valueOf( ctrlIndices[ i ]);
+			args[ j++ ] = Integer.valueOf( busIndices[ i ]);
+			args[ j++ ] = Integer.valueOf( numControls[ i ]);
 		}
 	
 		return( new OSCMessage( "/n_mapn", args ));
@@ -1120,12 +1120,12 @@ implements Constants, TreeNode
 	public OSCMessage mapnMsg( String[] ctrlNames, int[] busIndices, int[] numControls )
 	{
 		final Object[] args = new Object[ ctrlNames.length * 3 + 1 ];
-		args[ 0 ]			= new Integer( getNodeID() );
+		args[ 0 ]			= Integer.valueOf( getNodeID() );
 		
 		for( int i = 0, j = 1; i < ctrlNames.length; i++ ) {
 			args[ j++ ] = ctrlNames[ i ];
-			args[ j++ ] = new Integer( busIndices[ i ]);
-			args[ j++ ] = new Integer( numControls[ i ]);
+			args[ j++ ] = Integer.valueOf( busIndices[ i ]);
+			args[ j++ ] = Integer.valueOf( numControls[ i ]);
 		}
 	
 		return( new OSCMessage( "/n_mapn", args ));
@@ -1173,12 +1173,12 @@ implements Constants, TreeNode
 	public OSCMessage mapnMsg( int[] ctrlIndices, Bus[] busses )
 	{
 		final Object[] args = new Object[ ctrlIndices.length * 3 + 1 ];
-		args[ 0 ]			= new Integer( getNodeID() );
+		args[ 0 ]			= Integer.valueOf( getNodeID() );
 		
 		for( int i = 0, j = 1; i < ctrlIndices.length; i++ ) {
-			args[ j++ ] = new Integer( ctrlIndices[ i ]);
-			args[ j++ ] = new Integer( busses[ i ].getIndex() );
-			args[ j++ ] = new Integer( busses[ i ].getNumChannels() );
+			args[ j++ ] = Integer.valueOf( ctrlIndices[ i ]);
+			args[ j++ ] = Integer.valueOf( busses[ i ].getIndex() );
+			args[ j++ ] = Integer.valueOf( busses[ i ].getNumChannels() );
 		}
 	
 		return( new OSCMessage( "/n_mapn", args ));
@@ -1226,12 +1226,12 @@ implements Constants, TreeNode
 	public OSCMessage mapnMsg( String[] ctrlNames, Bus[] busses )
 	{
 		final Object[] args = new Object[ ctrlNames.length * 3 + 1 ];
-		args[ 0 ]			= new Integer( getNodeID() );
+		args[ 0 ]			= Integer.valueOf( getNodeID() );
 		
 		for( int i = 0, j = 1; i < ctrlNames.length; i++ ) {
 			args[ j++ ] = ctrlNames[ i ];
-			args[ j++ ] = new Integer( busses[ i ].getIndex() );
-			args[ j++ ] = new Integer( busses[ i ].getNumChannels() );
+			args[ j++ ] = Integer.valueOf( busses[ i ].getIndex() );
+			args[ j++ ] = Integer.valueOf( busses[ i ].getNumChannels() );
 		}
 	
 		return( new OSCMessage( "/n_mapn", args ));
@@ -1290,8 +1290,8 @@ implements Constants, TreeNode
 	 */
 	public OSCMessage releaseMsg( float releaseTime )
 	{
-		return new OSCMessage( "/n_set", new Object[] { new Integer( getNodeID() ), "gate",
-			new Float( releaseTime == 0.0f ? releaseTime : -1.0f - releaseTime )});	// so 1 sec. becomes -2 ??? XXX
+		return new OSCMessage( "/n_set", new Object[] { Integer.valueOf( getNodeID() ), "gate",
+			Float.valueOf( releaseTime == 0.0f ? releaseTime : -1.0f - releaseTime )});	// so 1 sec. becomes -2 ??? XXX
 	}
 	
 	/**
@@ -1319,7 +1319,7 @@ implements Constants, TreeNode
 	 */
 	public OSCMessage traceMsg()
 	{
-		return new OSCMessage( "/n_trace", new Object[] { new Integer( getNodeID() )});
+		return new OSCMessage( "/n_trace", new Object[] { Integer.valueOf( getNodeID() )});
 	}
 
 	/**
@@ -1349,7 +1349,7 @@ implements Constants, TreeNode
 	public void query( PrintStream out )
 	throws IOException
 	{
-		final Object		nodeIDArg = new Integer( getNodeID() );
+		final Object		nodeIDArg = Integer.valueOf( getNodeID() );
 		final OSCMessage	reply;
 		final Object		parent, prev, next, head, tail;
 		final boolean		isGroup;
@@ -1380,7 +1380,7 @@ implements Constants, TreeNode
 
 	public OSCMessage queryMsg()
 	{
-		return new OSCMessage( "/n_query", new Object[] { new Integer( getNodeID() )});
+		return new OSCMessage( "/n_query", new Object[] { Integer.valueOf( getNodeID() )});
 	}
 
 	public void register()
@@ -1433,7 +1433,7 @@ implements Constants, TreeNode
 // removed 02-oct-05
 //		this.setGroup( aNode.getGroup() );
 		return( new OSCMessage( "/n_before", new Object[] {
-			new Integer( this.getNodeID() ), new Integer( aNode.getNodeID() )}));
+			Integer.valueOf( this.getNodeID() ), Integer.valueOf( aNode.getNodeID() )}));
 	}
 
 	/**
@@ -1473,7 +1473,7 @@ implements Constants, TreeNode
 // removed 02-oct-05
 //		this.setGroup( aNode.getGroup() );
 		return( new OSCMessage( "/n_after", new Object[] {
-			new Integer( this.getNodeID() ), new Integer( aNode.getNodeID() )}));
+			Integer.valueOf( this.getNodeID() ), Integer.valueOf( aNode.getNodeID() )}));
 	}
 
 	/**

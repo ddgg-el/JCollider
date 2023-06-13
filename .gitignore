@@ -6,3 +6,8 @@ project/boot/
 .idea_modules/
 dependency-graph.sbt
 wiki/
+.bloop/
+.metals/
+.vscode/
+metals.sbt
+libs/

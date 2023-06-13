@@ -89,7 +89,7 @@ public class ServerOptions
 	 *	@return	a list containing <code>String</code>
 	 *			elements of the server options
 	 */
-	public java.util.List toOptionList( int port )
+	public java.util.List<String> toOptionList( int port )
 	{
 		return toOptionList( port, false );
 	}
@@ -105,12 +105,12 @@ public class ServerOptions
 	 *	@return	a list containing <code>String</code>
 	 *			elements of the server options
 	 */
-	public List toOptionList( int port, boolean verbose )
+	public List<String> toOptionList( int port, boolean verbose )
 	{
-		final List coll = new ArrayList();
+		final List<String> coll = new ArrayList<String>();
 
 		if( protocol.equals( UDP )) {
-			coll.add( "-u" );
+			coll.add("-u");
 		} else if( protocol.equals( TCP )) {
 			coll.add( "-t" );
 		} else {
@@ -462,7 +462,7 @@ public class ServerOptions
 	 *	@return	array of those elements in the same order as they appeared
 	 *			in the list
 	 */
-	public static String[] optionListToStringArray( List list )
+	public static String[] optionListToStringArray( List<String> list )
 	{
 		final String[] array	= new String[ list.size() ];
 	

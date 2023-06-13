@@ -31,6 +31,7 @@ import de.sciss.net.OSCMessage;
 public class NodeEvent
 extends BasicEvent
 {
+	private static final long serialVersionUID = 42L; // XXX:Serialized Object ...is this really necessary?
 // --- ID values ---
 	/**
 	 *  returned by getID() : the node was created
@@ -93,10 +94,10 @@ extends BasicEvent
 //	private final int	oldHeadID;
 //	private final int	oldTailID;
 
-	private static final List	collValidCmds;
+	private static final List<String>	collValidCmds;
 	
 	static {
-		final List coll = new ArrayList( 6 );
+		final List<String> coll = new ArrayList<String>( 6 );
 		coll.add( "/n_go" );
 		coll.add( "/n_end" );
 		coll.add( "/n_on" );
@@ -383,7 +384,7 @@ extends BasicEvent
 	 *			corresponding to a valid OSC command. Note that the element index
 	 *			reflects the event IDs, so <code>returnedList.get( GO ) == &quot;/n_go&quot;</code> etc.
 	 */
-	public static java.util.List getValidOSCCommands()
+	public static java.util.List<String> getValidOSCCommands()
 	{
 		return collValidCmds;
 	}

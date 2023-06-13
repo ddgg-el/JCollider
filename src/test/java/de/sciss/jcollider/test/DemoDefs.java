@@ -16,9 +16,9 @@ import de.sciss.net.OSCBundle;
  */
 public abstract class DemoDefs
 {
-	public static java.util.List create()
+	public static java.util.List<SynthDef> create()
 	{
-		final java.util.List	result	= new ArrayList();
+		final java.util.List<SynthDef>	result	= new ArrayList<SynthDef>();
 		final Random			rnd		= new Random( System.currentTimeMillis() );
 		SynthDef				def;
 		GraphElem				f, g, h;

@@ -106,7 +106,7 @@ extends Node
 //			(Group) target : target.getGroup() );
 
 		return( new OSCMessage( "/g_new", new Object[] {
-			new Integer( this.getNodeID() ), new Integer( addAction ), new Integer( target.getNodeID() )}));
+			Integer.valueOf( this.getNodeID() ), Integer.valueOf( addAction ), Integer.valueOf( target.getNodeID() )}));
 	}
 
 	public static Group basicNew( Server server )
@@ -199,7 +199,7 @@ extends Node
 // removed 02-oct-05
 //		aNode.setGroup( this );
 		return( new OSCMessage( "/g_head", new Object[] {
-			new Integer( this.getNodeID() ), new Integer( aNode.getNodeID() )}));
+			Integer.valueOf( this.getNodeID() ), Integer.valueOf( aNode.getNodeID() )}));
 	}
 
 	public OSCMessage moveNodeToTailMsg( Node aNode )
@@ -207,7 +207,7 @@ extends Node
 // removed 02-oct-05
 //		aNode.setGroup( this );
 		return( new OSCMessage( "/g_tail", new Object[] {
-			new Integer( this.getNodeID() ), new Integer( aNode.getNodeID() )}));
+			Integer.valueOf( this.getNodeID() ), Integer.valueOf( aNode.getNodeID() )}));
 	}
 			
 	// free my children, but this node is still playing
@@ -219,7 +219,7 @@ extends Node
 	
 	public OSCMessage freeAllMsg()
 	{
-		return new OSCMessage( "/g_freeAll", new Object[] { new Integer( this.getNodeID() )});
+		return new OSCMessage( "/g_freeAll", new Object[] { Integer.valueOf( this.getNodeID() )});
 	}
 
 	public void deepFree()
@@ -230,7 +230,7 @@ extends Node
 	
 	public OSCMessage deepFreeMsg()
 	{
-		return new OSCMessage( "/g_deepFree", new Object[] { new Integer( this.getNodeID() )});
+		return new OSCMessage( "/g_deepFree", new Object[] { Integer.valueOf( this.getNodeID() )});
 	}
 
 	public String toString()
@@ -246,7 +246,7 @@ extends Node
 
 	public TreeNode getChildAt( int childIndex )
 	{
-		final Enumeration children = children();
+		final Enumeration<Node> children = children();
 		for( int idx = 0; idx < childIndex; idx++ ) {
 			children.nextElement();
 		}
@@ -256,13 +256,13 @@ extends Node
 	public int getChildCount()
 	{
 		int idx = 0;
-		for( Enumeration children = children(); children.hasMoreElements(); children.nextElement() ) idx++;
+		for( Enumeration<Node> children = children(); children.hasMoreElements(); children.nextElement() ) idx++;
 		return idx;
 	}
 	
 	public int getIndex( TreeNode node )
 	{
-		final Enumeration children = children();
+		final Enumeration<Node> children = children();
 		for( int idx = 0; children.hasMoreElements(); idx++ ) {
 			if( children.nextElement().equals( node )) {
 				return idx;
@@ -281,7 +281,7 @@ extends Node
 		return false;
 	}
 	
-	public Enumeration children()
+	public Enumeration<Node> children()
 	{
 		return new ChildEnumeration( this );
 	}
@@ -289,7 +289,7 @@ extends Node
 // -------------- internal classes --------------
 
 	private static class ChildEnumeration
-	implements Enumeration
+	implements Enumeration<Node>
 	{
 		private Node nextElement;
 	
@@ -303,7 +303,7 @@ extends Node
 			return( nextElement != null );
 		}
 	
-		public Object nextElement()
+		public Node nextElement()
 		{
 			final Node result = nextElement;
 			if( nextElement == null ) {

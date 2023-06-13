@@ -70,6 +70,7 @@ implements ServerListener, Constants
 	 *	the <code>ServerPanel</code> to use a
 	 *	different font.
 	 */
+	private static final long serialVersionUID = 42L; // XXX:Serialized Object ...is this really necessary?
 	public static Font	fntConsole;
 	/**
 	 *	<code>Font</code> used for the GUI elements (buttons).
@@ -342,9 +343,9 @@ but.setMargin( new Insets( insets.top + 2, insets.left + 4, insets.bottom + 2, i
 		if( server.isRunning() ) {
 			final Server.Status status = server.getStatus();
 			final Float[] cntArgs	= new Float[ 1 ];
-			cntArgs[ 0 ] = new Float( status.avgCPU );
+			cntArgs[ 0 ] = Float.valueOf( status.avgCPU );
 			lbCntAvgCPU.setText( msgCntPercent.format( cntArgs ));
-			cntArgs[ 0 ] = new Float( status.peakCPU );
+			cntArgs[ 0 ] = Float.valueOf( status.peakCPU );
 			lbCntPeakCPU.setText( msgCntPercent.format( cntArgs ));
 			lbCntUGens.setText( String.valueOf( status.numUGens ));
 			lbCntSynths.setText( String.valueOf( status.numSynths ));
@@ -462,6 +463,7 @@ but.setMargin( new Insets( insets.top + 2, insets.left + 4, insets.bottom + 2, i
 	private class ActionBoot
 	extends AbstractAction
 	{
+		private static final long serialVersionUID = 42L; // XXX:Serialized Object ...is this really necessary?
 		private boolean booted;
 	
 		protected ActionBoot()
@@ -504,6 +506,8 @@ but.setMargin( new Insets( insets.top + 2, insets.left + 4, insets.bottom + 2, i
 	private class ActionDump
 	extends AbstractAction
 	{
+		private static final long serialVersionUID = 42L; // XXX:Serialized Object ...is this really necessary?
+		
 		private boolean dumping;
 	
 		protected ActionDump()

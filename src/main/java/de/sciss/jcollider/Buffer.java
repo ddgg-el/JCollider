@@ -19,6 +19,8 @@ import java.io.PrintStream;
 import de.sciss.net.OSCBundle;
 import de.sciss.net.OSCMessage;
 
+import de.sciss.jcollider.BlockAllocator.Block;
+
 /**
  *	Mimics SCLang's Buffer class,
  *	that is, it's a client side
@@ -461,9 +463,9 @@ implements Constants
 
 		final Object[] args = completionMsg == null ?
 			  new Object[] {
-				new Integer( getBufNum() ), new Integer( getNumFrames() ), new Integer( getNumChannels() )}
+				Integer.valueOf(getBufNum()), Integer.valueOf( getNumFrames() ), Integer.valueOf( getNumChannels() )}
 			: new Object[] {
-				new Integer( getBufNum() ), new Integer( getNumFrames() ), new Integer( getNumChannels() ),
+				Integer.valueOf( getBufNum() ), Integer.valueOf( getNumFrames() ), Integer.valueOf( getNumChannels() ),
 				completionMsg };
 
 		return( new OSCMessage( "/b_alloc", args ));
@@ -677,9 +679,9 @@ implements Constants
 		
 		final Object[] args = completionMsg == null ?
 			  new Object[] {
-				new Integer( getBufNum() ), path, new Long( startFrame ), new Integer( numFrames )}
+				Integer.valueOf( getBufNum() ), path, Long.valueOf( startFrame ), Integer.valueOf( numFrames )}
 			: new Object[] {
-				new Integer( getBufNum() ), path, new Long( startFrame ), new Integer( numFrames ),
+				Integer.valueOf( getBufNum() ), path, Long.valueOf( startFrame ), Integer.valueOf( numFrames ),
 				completionMsg };
 
 		return( new OSCMessage( "/b_allocRead", args ));
@@ -736,12 +738,12 @@ implements Constants
 		setPath( path );
 		
 		final Object[] args = new Object[ 4 + channels.length + (completionMsg == null ? 0 : 1) ];
-		args[ 0 ] = new Integer( getBufNum() );
+		args[ 0 ] = Integer.valueOf( getBufNum() );
 		args[ 1 ] = path;
-		args[ 2 ] = new Long( startFrame );
-		args[ 3 ] = new Integer( numFrames );
+		args[ 2 ] = Long.valueOf( startFrame );
+		args[ 3 ] = Integer.valueOf( numFrames );
 		for( int i = 4, j = 0; j < channels.length; ) {
-			args[ i++ ] = new Integer( channels[ j++ ]);
+			args[ i++ ] = Integer.valueOf( channels[ j++ ]);
 		}
 		if( completionMsg != null ) args[ args.length - 1 ] = completionMsg;
 		return( new OSCMessage( "/b_allocReadChannel", args ));
@@ -1239,11 +1241,11 @@ implements Constants
 		
 		final Object[] args = completionMsg == null ?
 			  new Object[] {
-				new Integer( getBufNum() ), path, new Long( fileStartFrame ), new Integer( numFrames ),
-				new Integer( bufStartFrame ), new Integer( leaveOpen ? 1 : 0 )}
+				Integer.valueOf( getBufNum() ), path, Long.valueOf( fileStartFrame ), Integer.valueOf( numFrames ),
+				Integer.valueOf( bufStartFrame ), Integer.valueOf( leaveOpen ? 1 : 0 )}
 			: new Object[] {
-				new Integer( getBufNum() ), path, new Long( fileStartFrame ), new Integer( numFrames ),
-				new Integer( bufStartFrame ), new Integer( leaveOpen ? 1 : 0 ),
+				Integer.valueOf( getBufNum() ), path, Long.valueOf( fileStartFrame ), Integer.valueOf( numFrames ),
+				Integer.valueOf( bufStartFrame ), Integer.valueOf( leaveOpen ? 1 : 0 ),
 				completionMsg };
 
 		return( new OSCMessage( "/b_read", args ));
@@ -1305,14 +1307,14 @@ implements Constants
 		setPath( path );
 		
 		final Object[] args = new Object[ 6 + channels.length + (completionMsg == null ? 0 : 1) ];
-		args[ 0 ] = new Integer( getBufNum() );
+		args[ 0 ] = Integer.valueOf( getBufNum() );
 		args[ 1 ] = path;
-		args[ 2 ] = new Long( fileStartFrame );
-		args[ 3 ] = new Integer( numFrames );
-		args[ 4 ] = new Integer( bufStartFrame );
-		args[ 5 ] = new Integer( leaveOpen ? 1 : 0 );
+		args[ 2 ] = Long.valueOf( fileStartFrame );
+		args[ 3 ] = Integer.valueOf( numFrames );
+		args[ 4 ] = Integer.valueOf( bufStartFrame );
+		args[ 5 ] = Integer.valueOf( leaveOpen ? 1 : 0 );
 		for( int i = 6, j = 0; j < channels.length; ) {
-			args[ i++ ] = new Integer( channels[ j++ ]);
+			args[ i++ ] = Integer.valueOf( channels[ j++ ]);
 		}
 		if( completionMsg != null ) args[ args.length - 1 ] = completionMsg;
 		return( new OSCMessage( "/b_readChannel", args ));
@@ -1544,11 +1546,11 @@ implements Constants
 	{
 		final Object[] args = completionMsg == null ?
 			  new Object[] {
-				new Integer( getBufNum() ), path, headerFormat, sampleFormat, new Integer( numFrames ),
-				new Integer( bufStartFrame ), new Integer( leaveOpen ? 1 : 0 )}
+				Integer.valueOf( getBufNum() ), path, headerFormat, sampleFormat, Integer.valueOf( numFrames ),
+				Integer.valueOf( bufStartFrame ), Integer.valueOf( leaveOpen ? 1 : 0 )}
 			: new Object[] {
-				new Integer( getBufNum() ), path, headerFormat, sampleFormat, new Integer( numFrames ),
-				new Integer( bufStartFrame ), new Integer( leaveOpen ? 1 : 0 ), completionMsg };
+				Integer.valueOf( getBufNum() ), path, headerFormat, sampleFormat, Integer.valueOf( numFrames ),
+				Integer.valueOf( bufStartFrame ), Integer.valueOf( leaveOpen ? 1 : 0 ), completionMsg };
 
 		return( new OSCMessage( "/b_write", args ));
 	}
@@ -1952,7 +1954,7 @@ implements Constants
 	public OSCMessage fillMsg( int startAt, int numSamples, float value )
 	{
 		return( new OSCMessage( "/b_fill", new Object[] {
-			new Integer( getBufNum() ), new Integer( startAt ), new Integer( numSamples ), new Float( value )}));
+			Integer.valueOf( getBufNum() ), Integer.valueOf( startAt ), Integer.valueOf( numSamples ), Float.valueOf( value )}));
 	}
 
 	public void fill( int[] startAt, int[] numSamples, float[] value )
@@ -1964,12 +1966,12 @@ implements Constants
 	public OSCMessage fillMsg( int[] startAt, int[] numSamples, float[] value )
 	{
 		final Object[] args = new Object[ startAt.length * 3 + 1 ];
-		args[ 0 ]	= new Integer( getBufNum() );
+		args[ 0 ]	= Integer.valueOf( getBufNum() );
 		
 		for( int i = 0, j = 1; i < startAt.length; i++ ) {
-			args[ j++ ] = new Integer( startAt[ i ]);
-			args[ j++ ] = new Integer( numSamples[ i ]);
-			args[ j++ ] = new Float( value[ i ]);
+			args[ j++ ] = Integer.valueOf( startAt[ i ]);
+			args[ j++ ] = Integer.valueOf( numSamples[ i ]);
+			args[ j++ ] = Float.valueOf( value[ i ]);
 		}
 	
 		return( new OSCMessage( "/b_fill", args ));
@@ -2001,8 +2003,8 @@ implements Constants
 	private OSCMessage simpleMsg( String cmdName, OSCMessage completionMsg )
 	{
 		final Object[] args = completionMsg == null ?
-			  new Object[] { new Integer( getBufNum() )}
-			: new Object[] { new Integer( getBufNum() ), completionMsg };
+			  new Object[] { Integer.valueOf( getBufNum() )}
+			: new Object[] { Integer.valueOf( getBufNum() ), completionMsg };
 
 		return( new OSCMessage( cmdName, args ));
 	}
@@ -2066,13 +2068,13 @@ implements Constants
 	throws IOException
 	{
 		final BlockAllocator		bufferAllocator	= server.getBufferAllocator();
-		final java.util.List		blocks			= bufferAllocator.getAllocatedBlocks();
+		final java.util.List<? extends Block>		blocks			= bufferAllocator.getAllocatedBlocks();
 		BlockAllocator.Block		block;
 		final OSCBundle				bndl	= new OSCBundle( 0.0 );
 
 		for( int i = 0; i < blocks.size(); i++ ) {
-			block = (BlockAllocator.Block) blocks.get( i );
-			bndl.addPacket( new OSCMessage( "/b_free", new Object[] { new Integer( block.getAddress() )}));
+			block = blocks.get( i );
+			bndl.addPacket( new OSCMessage( "/b_free", new Object[] { Integer.valueOf( block.getAddress() )}));
 			bufferAllocator.free( block.getAddress() );
 			server.freeBuf( block.getAddress() ); // this was forgotten in sclang
 		}

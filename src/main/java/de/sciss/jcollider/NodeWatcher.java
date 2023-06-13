@@ -77,24 +77,24 @@ implements EventManager.Processor, OSCResponderNode.Action, Constants, Runnable
 	private boolean						fireAllNodes	= false;
 	private boolean						autoRegister	= false;
 	
-	private final Map					mapNodes		= new HashMap();	// maps Integer( nodeID ) to Node ; synchronized through 'sync'
+	private final Map<Integer, Node>	mapNodes		= new HashMap<Integer, Node>();	// maps Integer( nodeID ) to Node ; synchronized through 'sync'
 	
 	private final OSCResponderNode[]	resps;
 	
 	private final Object				sync			= new Object();
-	private final List					collQueue		= new ArrayList();	// element = (OSCMessage) ; synchronized through 'sync'
+	private final List<OSCMessage>		collQueue		= new ArrayList<OSCMessage>();	// element = (OSCMessage) ; synchronized through 'sync'
 	
-	private static final Map			allInstances	= new HashMap();	// (String) Server.name to (NodeWatcher) instance
+	private static final Map<String, NodeWatcher>			allInstances	= new HashMap<String, NodeWatcher>();	// (String) Server.name to (NodeWatcher) instance
 
 	private NodeWatcher( Server s )
 	{
 		this.server	= s;
 		
 		// create responders for all known node notification messages.
-		final List collValidCmds = NodeEvent.getValidOSCCommands();
+		final List<String> collValidCmds = NodeEvent.getValidOSCCommands();
 		resps = new OSCResponderNode[ collValidCmds.size() ];
 		for( int i = 0; i < collValidCmds.size(); i++ ) {
-			resps[ i ] = new OSCResponderNode( server, (String) collValidCmds.get( i ), this );
+			resps[ i ] = new OSCResponderNode( server, collValidCmds.get( i ), this );
 		}
 	}
 	
@@ -116,7 +116,7 @@ implements EventManager.Processor, OSCResponderNode.Action, Constants, Runnable
 		synchronized( allInstances ) {
 			NodeWatcher nw;
 			
-			nw = (NodeWatcher) allInstances.get( s.getName() );
+			nw = allInstances.get( s.getName() );
 			if( nw == null ) {
 				nw = new NodeWatcher( s );
 				nw.start();
@@ -218,7 +218,7 @@ implements EventManager.Processor, OSCResponderNode.Action, Constants, Runnable
 	{
 		synchronized( sync ) {
 			if( watching ) {
-				final Object key = new Integer( node.getNodeID() );
+				final Integer key = Integer.valueOf( node.getNodeID() );
 				if( assumePlaying && mapNodes.containsKey( key )) {
 					node.setPlaying( true );
 				}
@@ -239,7 +239,7 @@ implements EventManager.Processor, OSCResponderNode.Action, Constants, Runnable
 	public void unregister( Node node )
 	{
 		synchronized( sync ) {
-			mapNodes.remove( new Integer( node.getNodeID() ));
+			mapNodes.remove( Integer.valueOf( node.getNodeID() ));
 			if( VERBOSE ) System.err.println( "NodeWatcher.unregister( " + node + " )" );
 		}
 	}
@@ -251,10 +251,10 @@ implements EventManager.Processor, OSCResponderNode.Action, Constants, Runnable
 	 *			itself is a copy and maybe modified. It will not be affected by
 	 *			successive calls to <code>register</code> or <code>unregister</code>
 	 */
-	public List getAllNodes()
+	public List<Node> getAllNodes()
 	{
 		synchronized( sync ) {
-			return new ArrayList( mapNodes.values() );
+			return new ArrayList<Node>( mapNodes.values() );
 		}
 	}
 
@@ -298,7 +298,7 @@ implements EventManager.Processor, OSCResponderNode.Action, Constants, Runnable
 		setFireAllNodes( true );
 		setAutoRegister( true );
 	
-		final Set			setNodes		= new HashSet();
+		final Set<Node>		setNodes		= new HashSet<Node>();
 		final NodeListener	nl;
 		final Timer			stopQueryTimer;
 
@@ -309,14 +309,14 @@ implements EventManager.Processor, OSCResponderNode.Action, Constants, Runnable
 			{
 				if( e.getID() != NodeEvent.INFO ) return;
 
-				final Node		n			= e.getNode();
-				final List		nextNodes;
+				final Node		n		= e.getNode();
+				final List<Integer>		nextNodes;
 				
 				if( setNodes.add( n )) {
 					register( n );
-					nextNodes = new ArrayList( 2 );
-					if( e.getHeadNodeID() != -1 ) nextNodes.add( new Integer( e.getHeadNodeID() ));
-					if( e.getSuccNodeID() != -1 ) nextNodes.add( new Integer( e.getSuccNodeID() ));
+					nextNodes = new ArrayList<Integer>( 2 );
+					if( e.getHeadNodeID() != -1 ) nextNodes.add( Integer.valueOf( e.getHeadNodeID() ));
+					if( e.getSuccNodeID() != -1 ) nextNodes.add( Integer.valueOf( e.getSuccNodeID() ));
 					if( !nextNodes.isEmpty() ) {
 						try {
 							server.sendMsg( new OSCMessage( "/n_query", nextNodes.toArray() ));
@@ -459,9 +459,9 @@ implements EventManager.Processor, OSCResponderNode.Action, Constants, Runnable
 	// @synchronization	has to be called with sync on sync
 	private void nodeGo( Node node, NodeEvent e )
 	{
-		final Group group	= (Group) mapNodes.get( new Integer( e.getParentGroupID() ));
-		final Node	pred	= (Node) mapNodes.get( new Integer( e.getPredNodeID() ));
-		final Node	succ	= (Node) mapNodes.get( new Integer( e.getSuccNodeID() ));
+		final Group group	= (Group) mapNodes.get( Integer.valueOf( e.getParentGroupID() ));
+		final Node	pred	= mapNodes.get( Integer.valueOf( e.getPredNodeID() ));
+		final Node	succ	= mapNodes.get( Integer.valueOf( e.getSuccNodeID() ));
 		
 		node.setGroup( group );
 		node.setPredNode( pred );
@@ -511,7 +511,7 @@ implements EventManager.Processor, OSCResponderNode.Action, Constants, Runnable
 
 		node.setPlaying( false );
 		node.setRunning( false );
-		mapNodes.remove( new Integer( node.getNodeID() ));
+		mapNodes.remove( Integer.valueOf( node.getNodeID() ));
 
 		if( VERBOSE ) System.err.println( "NodeWatcher.nodeEnd( " + node + " )" );
 	}
@@ -523,9 +523,9 @@ implements EventManager.Processor, OSCResponderNode.Action, Constants, Runnable
 		final Node	oldPred		= node.getPredNode();
 		final Node	oldSucc		= node.getSuccNode();
 	
-		final Group newGroup	= (Group) mapNodes.get( new Integer( e.getParentGroupID() ));
-		final Node	newPred		= (Node) mapNodes.get( new Integer( e.getPredNodeID() ));
-		final Node	newSucc		= (Node) mapNodes.get( new Integer( e.getSuccNodeID() ));
+		final Group newGroup	= (Group) mapNodes.get( Integer.valueOf( e.getParentGroupID() ));
+		final Node	newPred		= mapNodes.get( Integer.valueOf( e.getPredNodeID() ));
+		final Node	newSucc		= mapNodes.get( Integer.valueOf( e.getSuccNodeID() ));
 
 		node.setGroup( newGroup );
 		node.setPredNode( newPred );
@@ -610,10 +610,10 @@ implements EventManager.Processor, OSCResponderNode.Action, Constants, Runnable
 
 			when = System.currentTimeMillis();
 
-			for( Iterator iter = collQueue.iterator(); iter.hasNext(); ) {
-				msg			= (OSCMessage) iter.next();
+			for( Iterator<OSCMessage> iter = collQueue.iterator(); iter.hasNext(); ) {
+				msg			= iter.next();
 				nodeIDObj	= (Integer) msg.getArg( 0 );
-				node		= (Node) mapNodes.get( nodeIDObj );
+				node		= mapNodes.get( nodeIDObj );
 				if( node == null ) {
 					if( autoRegister ) {
 						node = ((Number) msg.getArg( 4 )).intValue() == NodeEvent.GROUP ? (Node) Group.basicNew( server, nodeIDObj.intValue() ) : (Node) Synth.basicNew( null, server, nodeIDObj.intValue() );

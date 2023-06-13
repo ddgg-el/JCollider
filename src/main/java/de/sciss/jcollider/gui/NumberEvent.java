@@ -35,6 +35,7 @@ extends BasicEvent
 	/**
 	 *  returned by getID() : the number changed
 	 */
+	private static final long serialVersionUID = 42L; // XXX:Serialized Object ...is this really necessary?
 	public static final int CHANGED		= 0;
 
 	private final Number	number;

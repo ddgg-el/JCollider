@@ -37,6 +37,7 @@ import javax.swing.event.ChangeListener;
 public class EZSlider
 extends JComponent
 {
+	private static final long serialVersionUID = 42L; // XXX:Serialized Object ...is this really necessary?
 	private final Object		sync			= new Object();
 	private ActionListener		actionListener	= null;
 	protected ControlSpec		spec;
@@ -100,7 +101,7 @@ extends JComponent
 			public void stateChanged( ChangeEvent e )
 			{
 				value	= spec.map( (double) ggSlider.getValue() / 0x10000 );
-				ggNumber.setNumber( new Double( value ));
+				ggNumber.setNumber( Double.valueOf( value ));
 				dispatchEvent();
 			}
 		});
@@ -206,7 +207,7 @@ extends JComponent
 	{
 		this.value = spec.constrain( value );
 		ggSlider.setValue( (int) (spec.unmap( value ) * 0x10000) );
-		ggNumber.setNumber( new Double( value ));
+		ggNumber.setNumber( Double.valueOf( value ));
 	}
 	
 	public void setUnmappedValue( double value )

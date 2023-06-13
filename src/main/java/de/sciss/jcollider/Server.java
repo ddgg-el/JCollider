@@ -77,8 +77,8 @@ implements Constants, EventManager.Processor
 	 */
 	public static final int					DEFAULT_PORT		= 57110;
 
-	private static final Set				setServers			= Collections.synchronizedSet( new HashSet() );
-	private static final Map				mapServerNames		= Collections.synchronizedMap( new HashMap() );
+	private static final Set<Server>				setServers			= Collections.synchronizedSet( new HashSet<Server>() );
+	private static final Map<String, Server>				mapServerNames		= Collections.synchronizedMap( new HashMap<String, Server>() );
 
 	private final String					name;
 	private final InetSocketAddress			addr;
@@ -119,7 +119,7 @@ implements Constants, EventManager.Processor
 
 	// messaging
 	private final EventManager				em					= new EventManager( this );
-	private final List						collBootCompletion	= new ArrayList();
+	private final List<CompletionAction>						collBootCompletion	= new ArrayList<CompletionAction>();
 	
 	protected BootThread					bootThread			= null;
 
@@ -505,7 +505,7 @@ implements Constants, EventManager.Processor
 				} else {
 	//System.err.println( "ici" );
 					while( !collBootCompletion.isEmpty() ) {
-						((CompletionAction) collBootCompletion.remove( 0 )).completion( this );
+						(collBootCompletion.remove( 0 )).completion( this );
 					}
 					changed( ServerEvent.RUNNING );
 				}
@@ -802,7 +802,7 @@ implements Constants, EventManager.Processor
 	public OSCMessage dumpOSCMsg( int dumpMode )
 	{
 		this.dumpMode = dumpMode;
-		return new OSCMessage( "/dumpOSC", new Object[] { new Integer( dumpMode )});
+		return new OSCMessage( "/dumpOSC", new Object[] { Integer.valueOf( dumpMode )});
 	}
 
 	/**
@@ -872,7 +872,7 @@ implements Constants, EventManager.Processor
 	throws IOException
 	{
 		this.notified = notified;
-		sendMsg( new OSCMessage( "/notify", new Object[] { new Integer( notified ? 1 : 0 )}));
+		sendMsg( new OSCMessage( "/notify", new Object[] { Integer.valueOf( notified ? 1 : 0 )}));
 	}
 	
 	/**
@@ -973,7 +973,7 @@ implements Constants, EventManager.Processor
 	private void bootServerApp( boolean startAliveThread )
 	{
 		final int				port		= getAddr().getPort();
-		final List				cmdList		= getOptions().toOptionList( port );
+		final List<String>				cmdList		= getOptions().toOptionList( port );
 		cmdList.add( 0, Server.program );
 		final String[]			cmdArray	= ServerOptions.optionListToStringArray( cmdList );
 	
@@ -1334,7 +1334,7 @@ implements Constants, EventManager.Processor
 	public boolean sync( OSCBundle bndl, float timeout )
 	throws IOException
 	{
-		final Integer id = new Integer( UniqueID.next() );
+		final Integer id = Integer.valueOf( UniqueID.next() );
 	
 		if( bndl == null ) bndl	= new OSCBundle();
 		bndl.addPacket( new OSCMessage( "/sync", new Object[] { id }));
@@ -1578,7 +1578,7 @@ resetBufferAutoInfo();
 	{
 		Server s;
 	
-		for( Iterator iter = setServers.iterator(); iter.hasNext(); ) {
+		for( Iterator<?> iter = setServers.iterator(); iter.hasNext(); ) {
 			s = (Server) iter.next();
 			if( s.isLocal ) {
 				try {

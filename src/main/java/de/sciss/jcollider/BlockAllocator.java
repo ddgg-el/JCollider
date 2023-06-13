@@ -54,7 +54,7 @@ public interface BlockAllocator
 	 *
 	 *	@return	a list whose elements are instances of <code>Block</code>
 	 */
-	public List getAllocatedBlocks();
+	public List<? extends Block> getAllocatedBlocks();
 
 	/**
 	 *	This sub interface describes a class which is

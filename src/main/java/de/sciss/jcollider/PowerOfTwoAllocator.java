@@ -84,9 +84,9 @@ implements BlockAllocator
 		}
 	}
 
-	public List getAllocatedBlocks()
+	public List<Block> getAllocatedBlocks()
 	{
-		final List result = new ArrayList();
+		final List<Block> result = new ArrayList<Block>();
 		
 		for( int i = 0; i < allocatedBlocks.length; i++ ) {
 			if( allocatedBlocks[ i ] != null ) result.add( allocatedBlocks[ i ]);

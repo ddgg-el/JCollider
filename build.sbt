@@ -10,21 +10,21 @@ homepage         := Some(url("https://github.com/Sciss/" + name.value))
 
 licenses         := Seq("LGPL v2.1+" -> url("http://www.gnu.org/licenses/lgpl-2.1.txt"))
 
-scalaVersion     := "2.11.7"
+scalaVersion     := "2.13.11"
 
 crossPaths       := false      // this is just a Java only project
 
 autoScalaLibrary := false      // this is just a Java only project
 
-lazy val basicJavaOptions = Seq("-source", "1.6", "-encoding", "utf8")
+lazy val basicJavaOptions = Seq("-source", "11", "-encoding", "utf8")
 
-javacOptions    ++= basicJavaOptions ++ Seq("-target", "1.6", "-Xlint")
+javacOptions    ++= basicJavaOptions ++ Seq("-target", "11", "-Xlint")
 
 javacOptions in (Compile, doc) := basicJavaOptions
 
 libraryDependencies ++= Seq(
-  "de.sciss" % "netutil"  % "1.0.0",
-  "de.sciss" % "scisslib" % "1.0.0"
+  "de.sciss" % "netutil"  % "1.1.0",
+  "de.sciss" % "scisslib" % "1.1.5"
 )
 
 mainClass in (Compile, run) := Some("de.sciss.jcollider.JCollider")

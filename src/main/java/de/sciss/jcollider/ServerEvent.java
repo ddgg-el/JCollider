@@ -26,6 +26,7 @@ import de.sciss.app.BasicEvent;
 public class ServerEvent
 extends BasicEvent
 {
+	private static final long serialVersionUID = 42L; // XXX:Serialized Object ...is this really necessary?
 // --- ID values ---
 	/**
 	 *  returned by getID() : the server started running

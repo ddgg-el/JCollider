@@ -102,13 +102,13 @@ public class BusTests
 			for( int i = 0; i < numVals; i++ ) {
 				vals[ i ] = rnd.nextFloat();
 			}
-			final List collOff = new ArrayList( b.getNumChannels() );
+			final List<Integer> collOff = new ArrayList<Integer>( b.getNumChannels() );
 			for( int i = 0; i < b.getNumChannels(); i++ ) {
-				collOff.add( new Integer( i ));
+				collOff.add( Integer.valueOf( i ));
 			}
 			final int offsets[] = new int[ numVals ];
 			for( int i = 0; i < numVals; i++ ) {
-				offsets[ i ] = ((Integer) collOff.remove( rnd.nextInt( collOff.size() ))).intValue();
+				offsets[ i ] = (collOff.remove( rnd.nextInt( collOff.size() ))).intValue();
 			}
 			b.set( offsets, vals );
 			b.get( offsets, new Bus.GetCompletionAction() {

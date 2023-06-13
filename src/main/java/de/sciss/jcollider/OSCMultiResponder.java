@@ -56,9 +56,9 @@ public class OSCMultiResponder
 implements OSCListener
 {
 //	private static final Map			mapServerToMulti	= new HashMap();
-	private final List					allNodes			= new ArrayList();
+	private final List<OSCResponderNode>					allNodes			= new ArrayList<OSCResponderNode>();
 //	private final Map					mapAddrToCmds		= new HashMap();
-	private final Map					mapCmdToNodes		= new HashMap();
+	private final Map<String,List<OSCResponderNode>>					mapCmdToNodes		= new HashMap<String,List<OSCResponderNode>>();
 //	private final SocketAddress			addr;
 
 	private static final boolean		debug				= false; 
@@ -165,7 +165,7 @@ implements OSCListener
 	protected void addNode( OSCResponderNode node )
 	throws IOException
 	{
-		List specialNodes;
+		List<OSCResponderNode> specialNodes;
 	
 		synchronized( sync ) {
 //			if( allNodes.isEmpty() && !alwaysListening ) {
@@ -176,9 +176,9 @@ implements OSCListener
 //				}
 //			}
 			allNodes.add( node );
-			specialNodes = (List) mapCmdToNodes.get( node.getCommandName() );
+			specialNodes = mapCmdToNodes.get( node.getCommandName() );
 			if( specialNodes == null ) {
-				specialNodes = new ArrayList( 4 );
+				specialNodes = new ArrayList<OSCResponderNode>( 4 );
 				mapCmdToNodes.put( node.getCommandName(), specialNodes );
 			}
 			specialNodes.add( node );
@@ -188,10 +188,10 @@ implements OSCListener
 	protected void removeNode( OSCResponderNode node )
 //	throws IOException
 	{
-		final List specialNodes;
+		final List<OSCResponderNode> specialNodes;
 
 		synchronized( sync ) {
-			specialNodes = (List) mapCmdToNodes.get( node.getCommandName() );
+			specialNodes = mapCmdToNodes.get( node.getCommandName() );
 			if( specialNodes != null ) {
 				specialNodes.remove( node );
 				allNodes.remove( node );
@@ -257,16 +257,16 @@ implements OSCListener
 
 	public void messageReceived( OSCMessage msg, SocketAddress sender, long time )
 	{
-		final List		specialNodes;
+		final List<OSCResponderNode>		specialNodes;
 		final int		numResps;
 		final String 	cmdNameTmp	= msg.getName();
 		final String	cmdName		= (cmdNameTmp.charAt( 0 ) == '/') ? cmdNameTmp : "/" + cmdNameTmp;
 		
 		synchronized( sync ) {
-			specialNodes = (List) mapCmdToNodes.get( cmdName );
+			specialNodes = mapCmdToNodes.get( cmdName );
 			if( specialNodes == null ) return;
 			numResps = specialNodes.size();
-			resps = (OSCResponderNode[]) specialNodes.toArray( resps );
+			resps = specialNodes.toArray( resps );
 		}
 
 		for( int i = 0; i < numResps; i++ ) {

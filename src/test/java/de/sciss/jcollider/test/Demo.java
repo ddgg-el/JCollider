@@ -100,12 +100,13 @@ public class Demo
 extends JFrame
 implements FileFilter, ServerListener, Constants
 {
+	private static final long serialVersionUID = 42L; // XXX:Serialized Object ...is this really necessary?
 	public static Font	fntGUI	= ServerPanel.fntGUI;
 
 	protected final SynthDefTable[] defTables;
 	protected SynthDefTable selectedTable	= null;
 	
-	protected static final Comparator synthDefNameComp = new SynthDefNameComp();
+	protected static final Comparator<SynthDef> synthDefNameComp = new SynthDefNameComp();
 	
 	protected Server		server	= null;
 	protected NodeWatcher	nw		= null;
@@ -154,7 +155,9 @@ implements FileFilter, ServerListener, Constants
 				fs + "usr" + fs + "local" + fs + "bin",
 				fs + "usr" + fs + "bin",
 				"C:\\Program Files\\SC3",
-				"C:\\Program Files\\SuperCollider_f"
+				"C:\\Program Files\\SuperCollider_f",
+				// /Applications/SuperColliderARM.app/Contents/Resources/scsynth
+				fs + "Applications" + fs + "SuperColliderARM.app" + fs + "Contents" + fs + "Resources"
 			});
 //			if( (f == null) && JCollider.isMacOS ) {
 //				try {
@@ -283,7 +286,7 @@ implements FileFilter, ServerListener, Constants
 //			UGenInfo.readDefinitions();
 			UGenInfo.readBinaryDefinitions();
 
-			final List collDefs = DemoDefs.create();
+			final List<SynthDef> collDefs = DemoDefs.create();
 			Collections.sort( collDefs, synthDefNameComp );
 //			defTables[ 1 ].addDefs( collDefs );
 			defTables[ 0 ].addDefs( collDefs );
@@ -312,13 +315,13 @@ implements FileFilter, ServerListener, Constants
 
 	private void sendDefs()
 	{
-		List	defs;
+		List<SynthDef>	defs;
 		SynthDef		def;
 	
 		for( int i = 0; i < defTables.length; i++ ) {
 			defs = defTables[ i ].getDefs();
 			for( int j = 0; j < defs.size(); j++ ) {
-				def = (SynthDef) defs.get( j );
+				def = defs.get( j );
 				try {
 					def.send( server );
 				}
@@ -408,6 +411,7 @@ implements FileFilter, ServerListener, Constants
 	private static class SynthDefTable
 	extends JTable
 	{
+		private static final long serialVersionUID = 42L; // XXX:Serialized Object ...is this really necessary?
 		private final SynthDefTableModel tm;
 	
 		protected SynthDefTable( String name )
@@ -424,7 +428,7 @@ implements FileFilter, ServerListener, Constants
 //			tm.addDef( def );
 //		}
 
-		protected void addDefs( List defs )
+		protected void addDefs( List<SynthDef> defs )
 		{
 			tm.addDefs( defs );
 		}
@@ -436,7 +440,7 @@ implements FileFilter, ServerListener, Constants
 			else return null;
 		}
 
-		protected List getDefs()
+		protected List<SynthDef> getDefs()
 		{
 			return tm.getDefs();
 		}
@@ -445,7 +449,8 @@ implements FileFilter, ServerListener, Constants
 	private static class SynthDefTableModel
 	extends AbstractTableModel
 	{
-		private final List collDefs = new ArrayList();
+		private static final long serialVersionUID = 42L; // XXX:Serialized Object ...is this really necessary?
+		private final List<SynthDef> collDefs = new ArrayList<SynthDef>();
 		private final String name;
 
 		protected SynthDefTableModel( String name )
@@ -472,7 +477,7 @@ implements FileFilter, ServerListener, Constants
 		public Object getValueAt( int row, int column )
 		{
 			if( row < collDefs.size() ) {
-				return ((SynthDef) collDefs.get( row )).getName();
+				return (collDefs.get( row )).getName();
 			} else {
 				return null;
 			}
@@ -484,7 +489,7 @@ implements FileFilter, ServerListener, Constants
 //			fireTableRowsInserted( collDefs.size() - 1, collDefs.size() - 1 );
 //		}
 
-		protected void addDefs( List defs )
+		protected void addDefs( List<SynthDef> defs )
 		{
 			if( defs.isEmpty() ) return;
 		
@@ -495,7 +500,7 @@ implements FileFilter, ServerListener, Constants
 
 		protected SynthDef getDef( int idx )
 		{
-			return (SynthDef) collDefs.get( idx );
+			return collDefs.get( idx );
 		}
 
 //		private int getNumDefs()
@@ -503,15 +508,16 @@ implements FileFilter, ServerListener, Constants
 //			return collDefs.size();
 //		}
 
-		protected List getDefs()
+		protected List<SynthDef> getDefs()
 		{
-			return new ArrayList( collDefs );
+			return new ArrayList<SynthDef>( collDefs );
 		}
 	}
 	
 	private class ActionPlay
 	extends AbstractAction
 	{
+		private static final long serialVersionUID = 42L; // XXX:Serialized Object ...is this really necessary?
 		protected ActionPlay()
 		{
 			super( "Play" );			
@@ -540,6 +546,7 @@ implements FileFilter, ServerListener, Constants
 	private class ActionStop
 	extends AbstractAction
 	{
+		private static final long serialVersionUID = 42L; // XXX:Serialized Object ...is this really necessary?
 		protected ActionStop()
 		{
 			super( "Stop All" );
@@ -584,6 +591,7 @@ implements FileFilter, ServerListener, Constants
 	private class ActionDiagram
 	extends AbstractAction
 	{
+		private static final long serialVersionUID = 42L; // XXX:Serialized Object ...is this really necessary?
 		protected ActionDiagram()
 		{
 			super( "Def Diagram" );			
@@ -603,6 +611,7 @@ implements FileFilter, ServerListener, Constants
 	private class ActionDump
 	extends AbstractAction
 	{
+		private static final long serialVersionUID = 42L; // XXX:Serialized Object ...is this really necessary?
 		protected ActionDump()
 		{
 			super( "Def Dump" );			
@@ -622,6 +631,7 @@ implements FileFilter, ServerListener, Constants
 	private class ActionSynthDefApiEx
 	extends AbstractAction
 	{
+		private static final long serialVersionUID = 42L; // XXX:Serialized Object ...is this really necessary?
 		protected ActionSynthDefApiEx()
 		{
 			super( "API Ex" );			
@@ -636,6 +646,7 @@ implements FileFilter, ServerListener, Constants
 	private class ActionNodeTree
 	extends AbstractAction
 	{
+		private static final long serialVersionUID = 42L; // XXX:Serialized Object ...is this really necessary?
 		protected ActionNodeTree()
 		{
 			super( "Node Tree" );			
@@ -660,19 +671,20 @@ implements FileFilter, ServerListener, Constants
 	}
 
 	private static class SynthDefNameComp
-	implements Comparator
+	implements Comparator<SynthDef>
 	{
 		protected SynthDefNameComp() { /* empty */ }
 		
-		public int compare( Object def1, Object def2 )
+		public int compare( SynthDef def1, SynthDef def2 )
 		{
-			return( ((SynthDef) def1).getName().compareTo( ((SynthDef) def2).getName() ));
+			return( def1.getName().compareTo(def2.getName() ));
 		}
 	}
 
 	private class SynthDefFileTransferHandler
 	extends TransferHandler
 	{
+		private static final long serialVersionUID = 42L; // XXX:Serialized Object ...is this really necessary?
 		private final int idx;
 	
 		protected SynthDefFileTransferHandler( int idx )
@@ -686,8 +698,8 @@ implements FileFilter, ServerListener, Constants
 		public boolean importData( JComponent c, Transferable t )
 		{
 			final Object			o;
-			final List				fileList;
-			final List				collDefs;
+			final List<File>		fileList;
+			final List<SynthDef>	collDefs;
 			File					f;
 			SynthDef[]				defs;
 		
@@ -695,10 +707,10 @@ implements FileFilter, ServerListener, Constants
 				if( t.isDataFlavorSupported( DataFlavor.javaFileListFlavor )) {
 					o =  t.getTransferData( DataFlavor.javaFileListFlavor );
 					if( o instanceof List ) {
-						fileList	= (List) o;
-						collDefs	= new ArrayList();
+						fileList	= (List<File>) o;
+						collDefs	= new ArrayList<SynthDef>();
 						for( int i = 0; i < fileList.size(); i++ ) {
-							f = (File) fileList.get( i );
+							f = fileList.get( i );
 							try {
 								if( SynthDef.isDefFile( f )) {
 									defs = SynthDef.readDefFile( f );

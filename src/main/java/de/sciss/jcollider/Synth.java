@@ -122,13 +122,13 @@ extends Node
 		final Object[]	allArgs	= new Object[ argNum * 2 + 4 ];
 		
 		allArgs[ 0 ]			= getDefName();
-		allArgs[ 1 ]			= new Integer( getNodeID() );
-		allArgs[ 2 ]			= new Integer( addAction );
-		allArgs[ 3 ]			= new Integer( target.getNodeID() );
+		allArgs[ 1 ]			= Integer.valueOf( getNodeID() );
+		allArgs[ 2 ]			= Integer.valueOf( addAction );
+		allArgs[ 3 ]			= Integer.valueOf( target.getNodeID() );
 		
 		for( int i = 0, j = 4; i < argNum; i++ ) {
 			allArgs[ j++ ]		= argNames[ i ];
-			allArgs[ j++ ]		= new Float( argValues[ i ]);
+			allArgs[ j++ ]		= Float.valueOf( argValues[ i ]);
 		}
 			
 		return new OSCMessage( "/s_new", allArgs );
@@ -262,7 +262,7 @@ extends Node
 	{
 		final OSCMessage getMsg = getMsg( index );
 		final OSCMessage replyMsg = getServer().sendMsgSync( getMsg, "/n_set", "/fail",
-		    new int[] { 0, 1 }, new Object[] { new Integer( getNodeID() ), new Integer( index )},
+		    new int[] { 0, 1 }, new Object[] { Integer.valueOf( getNodeID() ), Integer.valueOf( index )},
 		    new int[] { 0 }, new Object[] { getMsg.getName() }, 4f );
 		
 		if( (replyMsg != null) && replyMsg.getName().equals( "/n_set" )) {
@@ -287,10 +287,10 @@ extends Node
 		final int[]			doneIndices	= new int[ indices.length + 1 ];
 		final Object[]		doneMatches	= new Object[ indices.length + 1 ];
 		doneIndices[ 0 ] = 0;
-		doneMatches[ 0 ] = new Integer( getNodeID() );
+		doneMatches[ 0 ] = Integer.valueOf( getNodeID() );
 		for( int i = 1, j = 0, k = 1; j < indices.length; i++, j++, k += 2 ) {
 			doneIndices[ i ] = k;
-			doneMatches[ i ] = new Integer( indices[ j ]);
+			doneMatches[ i ] = Integer.valueOf( indices[ j ]);
 		}
 		final OSCMessage replyMsg = getServer().sendMsgSync( getMsg, "/n_set", "/fail",
 		    doneIndices, doneMatches,
@@ -320,7 +320,7 @@ extends Node
 	{
 		final OSCMessage getMsg = getMsg( name );
 		final OSCMessage replyMsg = getServer().sendMsgSync( getMsg, "/n_set", "/fail",
-		    new int[] { 0, 1 }, new Object[] { new Integer( getNodeID() ), name },
+		    new int[] { 0, 1 }, new Object[] { Integer.valueOf( getNodeID() ), name },
 		    new int[] { 0 }, new Object[] { getMsg.getName() }, 4f );
 		
 		if( (replyMsg != null) && replyMsg.getName().equals( "/n_set" )) {
@@ -345,7 +345,7 @@ extends Node
 		final int[]			doneIndices	= new int[ names.length + 1 ];
 		final Object[]		doneMatches = new Object[ names.length + 1 ];
 		doneIndices[ 0 ] = 0;
-		doneMatches[ 0 ] = new Integer( getNodeID() );
+		doneMatches[ 0 ] = Integer.valueOf( getNodeID() );
 		for( int i = 1, j = 0, k = 1; j < names.length; i++, j++, k += 2 ) {
 			doneIndices[ i ] = k;
 			doneMatches[ i ] = names[ j ];
@@ -367,28 +367,28 @@ extends Node
 	
 	public OSCMessage getMsg( int index )
 	{
-		return new OSCMessage( "/s_get", new Object[] { new Integer( getNodeID() ), new Integer( index )});
+		return new OSCMessage( "/s_get", new Object[] { Integer.valueOf( getNodeID() ), Integer.valueOf( index )});
 	}
 
 	public OSCMessage getMsg( int[] indices )
 	{
 		final Object[] args = new Object[ indices.length + 1 ];
-		args[ 0 ] = new Integer( getNodeID() );
+		args[ 0 ] = Integer.valueOf( getNodeID() );
 		for( int i = 1, j = 0; j < indices.length; i++, j++ ) {
-			args[ i ] = new Integer( indices[ j ]);
+			args[ i ] = Integer.valueOf( indices[ j ]);
 		}
 		return new OSCMessage( "/s_get", args );
 	}
 
 	public OSCMessage getMsg( String name )
 	{
-		return new OSCMessage( "/s_get", new Object[] { new Integer( getNodeID() ), name });
+		return new OSCMessage( "/s_get", new Object[] { Integer.valueOf( getNodeID() ), name });
 	}
 
 	public OSCMessage getMsg( String[] names )
 	{
 		final Object[] args = new Object[ names.length + 1 ];
-		args[ 0 ] = new Integer( getNodeID() );
+		args[ 0 ] = Integer.valueOf( getNodeID() );
 		System.arraycopy(  names, 0, args, 1, names.length );
 		return new OSCMessage( "/s_get", args );
 	}
@@ -407,7 +407,7 @@ extends Node
 	{
 		final OSCMessage getnMsg = getnMsg( index, count );
 		final OSCMessage replyMsg = getServer().sendMsgSync( getnMsg, "/n_setn", "/fail",
-		    new int[] { 0, 1, 2 }, new Object[] { new Integer( getNodeID() ), new Integer( index ), new Integer( count )},
+		    new int[] { 0, 1, 2 }, new Object[] { Integer.valueOf( getNodeID() ), Integer.valueOf( index ), Integer.valueOf( count )},
 		    new int[] { 0 }, new Object[] { getnMsg.getName() }, 4f );
 		
 		if( (replyMsg != null) && replyMsg.getName().equals( "/n_setn" )) {
@@ -435,7 +435,7 @@ extends Node
 	{
 		final OSCMessage getnMsg = getnMsg( name, count );
 		final OSCMessage replyMsg = getServer().sendMsgSync( getnMsg, "/n_setn", "/fail",
-		    new int[] { 0, 1, 2 }, new Object[] { new Integer( getNodeID() ), new Integer( name ), new Integer( count )},
+		    new int[] { 0, 1, 2 }, new Object[] { Integer.valueOf( getNodeID() ), Integer.valueOf( name ), Integer.valueOf( count )},
 		    new int[] { 0 }, new Object[] { getnMsg.getName() }, 4f );
 		
 		if( (replyMsg != null) && replyMsg.getName().equals( "/n_setn" )) {
@@ -467,14 +467,14 @@ extends Node
 		final Object[]		doneMatches	= new Object[ (indices.length << 1) + 1 ];
 		int numValues    = 0;
 		doneIndices[ 0 ] = 0;
-		doneMatches[ 0 ] = new Integer( getNodeID() );
+		doneMatches[ 0 ] = Integer.valueOf( getNodeID() );
 		for( int i = 1, j = 0, k = 1; j < indices.length; j++ ) {
 			doneIndices[ i ] = k;
-			doneMatches[ i ] = new Integer( indices[ j ]);
+			doneMatches[ i ] = Integer.valueOf( indices[ j ]);
 			i++;
 			k++;
 			doneIndices[ i ] = k;
-			doneMatches[ i ] = new Integer( counts[ j ]);
+			doneMatches[ i ] = Integer.valueOf( counts[ j ]);
 			i++;
 			k += counts[ j ] + 1;
 			numValues += counts[ j ]; 
@@ -514,14 +514,14 @@ extends Node
 		final Object[]		doneMatches	= new Object[ (names.length << 1) + 1 ];
 		int numValues    = 0;
 		doneIndices[ 0 ] = 0;
-		doneMatches[ 0 ] = new Integer( getNodeID() );
+		doneMatches[ 0 ] = Integer.valueOf( getNodeID() );
 		for( int i = 1, j = 0, k = 1; j < names.length; j++ ) {
 			doneIndices[ i ] = k;
-			doneMatches[ i ] = new Integer( names[ j ]);
+			doneMatches[ i ] = Integer.valueOf( names[ j ]);
 			i++;
 			k++;
 			doneIndices[ i ] = k;
-			doneMatches[ i ] = new Integer( counts[ j ]);
+			doneMatches[ i ] = Integer.valueOf( counts[ j ]);
 			i++;
 			k += counts[ j ] + 1;
 			numValues += counts[ j ]; 
@@ -545,8 +545,8 @@ extends Node
 
 	public OSCMessage getnMsg( int index, int count )
 	{
-		return new OSCMessage( "/s_getn", new Object[] { new Integer( getNodeID() ),
-		 					   new Integer( index ), new Integer( count )});
+		return new OSCMessage( "/s_getn", new Object[] { Integer.valueOf( getNodeID() ),
+		 					   Integer.valueOf( index ), Integer.valueOf( count )});
 	}
 
 	public OSCMessage getnMsg( int[] indices, int[] counts )
@@ -554,18 +554,18 @@ extends Node
 		if( indices.length != counts.length ) throw new IllegalArgumentException( "# of indices must match # of counts" );
 		
 		final Object[] args = new Object[ (indices.length << 1) + 1 ];
-		args[ 0 ] = new Integer( getNodeID() );
+		args[ 0 ] = Integer.valueOf( getNodeID() );
 		for( int i = 1, j = 0; j < indices.length; j++ ) {
-			args[ i++ ] = new Integer( indices[ j ]);
-			args[ i++ ] = new Integer( counts[ j ]);
+			args[ i++ ] = Integer.valueOf( indices[ j ]);
+			args[ i++ ] = Integer.valueOf( counts[ j ]);
 		}
 		return new OSCMessage( "/s_getn", args );
 	}
 
 	public OSCMessage getnMsg( String name, int count )
 	{
-		return new OSCMessage( "/s_getn", new Object[] { new Integer( getNodeID() ),
-							   name, new Integer( count )});
+		return new OSCMessage( "/s_getn", new Object[] { Integer.valueOf( getNodeID() ),
+							   name, Integer.valueOf( count )});
 	}
 
 	public OSCMessage getnMsg( String[] names, int[] counts )
@@ -573,10 +573,10 @@ extends Node
 		if( names.length != counts.length ) throw new IllegalArgumentException( "# of names must match # of counts" );
 		
 		final Object[] args = new Object[ (names.length << 1) + 1 ];
-		args[ 0 ] = new Integer( getNodeID() );
+		args[ 0 ] = Integer.valueOf( getNodeID() );
 		for( int i = 1, j = 0; j < names.length; j++ ) {
 			args[ i++ ] = names[ j ];
-			args[ i++ ] = new Integer( counts[ j ]);
+			args[ i++ ] = Integer.valueOf( counts[ j ]);
 		}
 		return new OSCMessage( "/s_getn", args );
 	}
@@ -617,8 +617,8 @@ extends Node
 		return true;
 	}
 	
-	public Enumeration children()
+	public Enumeration<Node> children()
 	{
-		return null;	// XXX allowed?
+		return null;
 	}
 }

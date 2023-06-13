@@ -66,6 +66,7 @@ public class NumberField
 extends JFormattedTextField
 implements EventManager.Processor //, PropertyChangeListener
 {
+	private static final long serialVersionUID = 42L; // XXX:Serialized Object ...is this really necessary?
 	private static final double LN10	= Math.log( 10 );
 
 	/**
@@ -120,7 +121,7 @@ implements EventManager.Processor //, PropertyChangeListener
 
 		final ActionMap amap	= getActionMap();
 		final InputMap	imap	= getInputMap();
-		final int		msh		= Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+		final int		msh		= Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
 		Action			action;
 		Object			key;
 
@@ -251,8 +252,8 @@ implements EventManager.Processor //, PropertyChangeListener
 		setColumns( i );
 
 		if( value == null ) {
-			value	= space.isInteger() ? (Number) new Long( (long) (space.reset + 0.5) ) :
-										  (Number) new Double( space.reset );
+			value	= space.isInteger() ? (Number) Long.valueOf( (long) (space.reset + 0.5) ) :
+										  (Number) Double.valueOf( space.reset );
 		}
 		numberFormat.setGroupingUsed( false );
 
@@ -262,18 +263,18 @@ implements EventManager.Processor //, PropertyChangeListener
 			if( space.isInteger() ) {
 				numberFormatter.setValueClass( Long.class );
 				if( !Double.isInfinite( space.min )) {
-					numberFormatter.setMinimum( new Long( (long) space.min ));
+					numberFormatter.setMinimum( Long.valueOf( (long) space.min ));
 				}
 				if( !Double.isInfinite( space.max )) {
-					numberFormatter.setMaximum( new Long( (long) space.max ));
+					numberFormatter.setMaximum( Long.valueOf( (long) space.max ));
 				}
 			} else {
 				numberFormatter.setValueClass( Double.class );
 				if( !Double.isInfinite( space.min )) {
-					numberFormatter.setMinimum( new Double( space.min ));
+					numberFormatter.setMinimum( Double.valueOf( space.min ));
 				}
 				if( !Double.isInfinite( space.max )) {
-					numberFormatter.setMaximum( new Double( space.max ));
+					numberFormatter.setMaximum( Double.valueOf( space.max ));
 				}
 			}
 
@@ -397,6 +398,7 @@ implements EventManager.Processor //, PropertyChangeListener
 	private class ActionLooseFocus
 	extends AbstractAction
 	{
+		private static final long serialVersionUID = 42L; // XXX:Serialized Object ...is this really necessary?
 		protected ActionLooseFocus() { /* empty */ }
 		
 		public void actionPerformed( ActionEvent e )
@@ -411,6 +413,7 @@ implements EventManager.Processor //, PropertyChangeListener
 	private class NumberTransferHandler
 	extends TransferHandler
 	{
+		private static final long serialVersionUID = 42L; // XXX:Serialized Object ...is this really necessary?
 		protected NumberTransferHandler() { /* empty */ }
 
 		/**

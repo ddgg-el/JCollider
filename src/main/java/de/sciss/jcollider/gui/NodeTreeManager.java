@@ -60,11 +60,11 @@ implements NodeListener
 	 *	Set this to <code>true</code> for debugging
 	 *	the incoming node notifications and tree model updates
 	 */
-	public boolean					VERBOSE			= false;
+	public boolean						VERBOSE			= false;
 
-	private final DefaultTreeModel	model;
-	private final NodeWatcher		nw;
-	private final Map				mapNodeBackups	= new HashMap();
+	private final DefaultTreeModel		model;
+	private final NodeWatcher			nw;
+	private final Map<Integer, Node>	mapNodeBackups	= new HashMap<Integer,Node>();
 	
 	/**
 	 *	Creates a new <code>NodeTreeManager</code> for a given
@@ -83,12 +83,12 @@ implements NodeListener
 		model	= new DefaultTreeModel( rootNode, true );
 		nw.addListener( this );
 		
-		final List	collNodes = nw.getAllNodes();
+		final List<Node>	collNodes = nw.getAllNodes();
 		Node		node;
 		
 		for( int i = 0; i < collNodes.size(); i++ ) {
-			node	= (Node) collNodes.get( i );
-			mapNodeBackups.put( new Integer( node.getNodeID() ), node );
+			node	= collNodes.get( i );
+			mapNodeBackups.put( Integer.valueOf( node.getNodeID() ), node );
 		}
 	}
 
@@ -157,8 +157,8 @@ implements NodeListener
 				stream.println( "\nNest count exceeds 100, probably closed loop. Terminating" );
 			}
 			int childCount = 0;
-			for( Enumeration children = node.children(); children.hasMoreElements() && (childCount < 300); childCount++ ) {
-				dumpTree( stream, (TreeNode) children.nextElement(), nestCount );
+			for( Enumeration<? extends TreeNode> children = node.children(); children.hasMoreElements() && (childCount < 300); childCount++ ) {
+				dumpTree( stream, children.nextElement(), nestCount );
 			}
 			if( childCount == 300 ) {
 				stream.println( "\nChild count exceeds 300, probably closed loop. Terminating" );
@@ -177,7 +177,7 @@ implements NodeListener
 		final Node		node	= e.getNode();
 		if( node == null ) return;	// only if we've got a client representation
 
-		final Integer	key		= new Integer( e.getNodeID() );
+		final Integer	key		= Integer.valueOf( e.getNodeID() );
 		final Group		group;
 		final Group		groupBak;
 		final Node		predBak;
@@ -195,8 +195,8 @@ implements NodeListener
 			break;
 
 		case NodeEvent.END:
-			groupBak	= (Group) mapNodeBackups.get( new Integer( e.getOldParentGroupID() ));
-			predBak		= (Node)  mapNodeBackups.get( new Integer( e.getOldPredNodeID() ));
+			groupBak	= (Group) mapNodeBackups.get( Integer.valueOf( e.getOldParentGroupID() ));
+			predBak		= mapNodeBackups.get( Integer.valueOf( e.getOldPredNodeID() ));
 			if( groupBak != null ) {
 				idx	= predBak == null ? 0 : groupBak.getIndex( predBak ) + 1;
 				if( VERBOSE ) System.err.println( "nodesWereRemoved( "+groupBak+", { "+idx+" }, { "+node+" })" );
@@ -212,7 +212,7 @@ implements NodeListener
 			break;
 
 		case NodeEvent.MOVE:
-			groupBak	= (Group) mapNodeBackups.get( new Integer( e.getOldParentGroupID() ));
+			groupBak	= (Group) mapNodeBackups.get( Integer.valueOf( e.getOldParentGroupID() ));
 			group		= node.getGroup();
 			
 			if( (group != null) && (groupBak != null) ) {

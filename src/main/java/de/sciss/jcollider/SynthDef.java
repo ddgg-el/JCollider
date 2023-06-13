@@ -196,19 +196,19 @@ implements Constants
 
 	private static final int		SCGF_MAGIC		= 0x53436766; // 'SCgf'
 	
-	private			List			controlDescs	= new ArrayList();
-	private			List			ugens			= new ArrayList();
-	private			Set				ugenSet			= new HashSet();
-	private			List			constants		= new ArrayList();
-	private			Set				constantSet		= new HashSet();
-	private	final	String			name;
-	private			List			variants		= new ArrayList();
+	private			List<ControlDesc>	controlDescs	= new ArrayList<ControlDesc>();
+	private			List<UGen>			ugens			= new ArrayList<UGen>();
+	private			Set<UGen>			ugenSet			= new HashSet<UGen>();
+	private			List<Constant>		constants		= new ArrayList<Constant>();
+	private			Set<Constant>		constantSet		= new HashSet<Constant>();
+	private	final	String				name;
+	private			List				variants		= new ArrayList(); // XXX: non definible because not implemented
 	
 	private static final Object[]	RATES			= { kScalarRate, kControlRate, kAudioRate, kDemandRate };
 
-	private static final Comparator synthIdxComp	= new SynthIndexComparator();
+	private static final Comparator<UGenEnv> synthIdxComp	= new SynthIndexComparator();
 
-	private static final Set		ctrlUGensSet	= new HashSet();
+	private static final Set<String>		ctrlUGensSet	= new HashSet<String>();
 
 	static {
 		ctrlUGensSet.add( "Control" );
@@ -351,7 +351,7 @@ implements Constants
 		UGenInput	ui;
 	
 		for( int i = 0; i < ugens.size(); i++ ) {
-			ugen = (UGen) ugens.get( i );
+			ugen = ugens.get( i );
 			for( int j = 0; j < ugen.getNumInputs(); j++ ) {
 				ui = ugen.getInput( j );
 				if( ui instanceof Constant ) {
@@ -366,7 +366,7 @@ implements Constants
 		// initializes the inlet/outlet lists
 		// and collects the ugens that do not
 		// rely on other ugens
-		final List available = initTopoSort();
+		final List<UGenEnv> available = initTopoSort();
 
 		// now all ugens are collected as ugen-environments
 		// and will be re-added according to the tree structure
@@ -375,9 +375,9 @@ implements Constants
 		UGenEnv env, env2;
 
 		while( !available.isEmpty() ) {
-			env = (UGenEnv) available.remove( available.size() - 1 );
+			env = available.remove( available.size() - 1 );
 			for( int i = env.collDe.size() - 1; i >= 0; i-- ) {
-				env2 = (UGenEnv) env.collDe.get( i );
+				env2 = env.collDe.get( i );
 				env2.collAnte.remove( env );
 				if( env2.collAnte.isEmpty() ) available.add( env2 ); // treated in next loop
 			}
@@ -387,12 +387,12 @@ implements Constants
 //		cleanupTopoSort();
 	}
 
-	private List initTopoSort()
+	private List<UGenEnv> initTopoSort()
 	{
 		final int				numUGens	= ugens.size();
 	
-		final List				available	= new ArrayList();
-		final Map				mapEnv		= new HashMap();
+		final List<UGenEnv>		available	= new ArrayList<UGenEnv>();
+		final Map<UGen,UGenEnv>	mapEnv		= new HashMap<UGen,UGenEnv>();
 		final UGenEnv[]			envs		= new UGenEnv[ numUGens ];
 
 		UGen					ugen;
@@ -400,7 +400,7 @@ implements Constants
 		UGenInput				ui;
 
 		for( int i = 0; i < numUGens; i++ ) {
-			ugen		= (UGen) ugens.get( i );
+			ugen		= ugens.get( i );
 			env			= new UGenEnv( ugen, i );
 			mapEnv.put( ugen, env );
 			envs[ i ]	= env;
@@ -413,7 +413,7 @@ implements Constants
 			for( int j = 0; j < ugen.getNumInputs(); j++ ) {
 				ui		= ugen.getInput( j );
 				if( ui instanceof UGenChannel ) {
-					env2	= (UGenEnv) mapEnv.get( ((UGenChannel) ui).getUGen() );
+					env2	= mapEnv.get( ((UGenChannel) ui).getUGen() );
 					env.collAnte.add( env2 );
 					env2.collDe.add( env );
 				}
@@ -684,7 +684,7 @@ implements Constants
 		if( ugens.size() > 0 ) out.println( "\n ugens:" );
 		for( int i = 0; i < ugens.size(); i++ ) {
 			out.print( "  #" + i + " : " );
-			ugen	= (UGen) ugens.get( i );
+			ugen	= ugens.get( i );
 			out.print( ugen.dumpName() + " @ " + ugen.getRate() );
 			if( ugen.getNumOutputs() != 1 ) out.print( ", numOuts: " + ugen.getNumOutputs() );
 			inputs	= ugen.getInputs();
@@ -695,7 +695,7 @@ implements Constants
 						uch = (UGenChannel) inputs[ j ];
 						out.print( "#" + ugens.indexOf( uch.getUGen() ) + '_' );
 						if( uch.getUGen().getName().equals( "Control" )) {
-							out.print( "Control(\"" + ((ControlDesc) controlDescs.get(
+							out.print( "Control(\"" + (controlDescs.get(
 								uch.getUGen().getSpecialIndex() + uch.getChannel() )).getName() + "\")" );
 						} else {
 							out.print( uch.dumpName() );
@@ -713,7 +713,7 @@ implements Constants
 		if( controlDescs.size() > 0 ) out.println( "\n controls:" );
 		for( int i = 0; i < controlDescs.size(); i++ ) {
 			out.print( "  #" + i + " : " );
-			((ControlDesc) controlDescs.get( i )).printOn( out );
+			(controlDescs.get( i )).printOn( out );
 		}
 	}
 	
@@ -723,9 +723,9 @@ implements Constants
 	 *
 	 *	@return	list whose elements are of class <code>UGen</code>
 	 */
-	public List getUGens()
+	public List<UGen> getUGens()
 	{
-		return new ArrayList( ugens );
+		return new ArrayList<UGen>( ugens );
 	}
 
 	/**
@@ -833,13 +833,13 @@ implements Constants
 
 		dos.writeShort( controlDescs.size() );
 		for( int i = 0; i < controlDescs.size(); i++ ) {
-			desc = (ControlDesc) controlDescs.get( i );
+			desc = controlDescs.get( i );
 			dos.writeFloat( desc.getDefaultValue() );
 		}
 		
 		dos.writeShort( controlDescs.size() );
 		for( int i = 0; i < controlDescs.size(); i++ ) {
-			desc = (ControlDesc) controlDescs.get( i );
+			desc = controlDescs.get( i );
 			if( desc.getName() != null ) {
 				SynthDef.writePascalString( dos, desc.getName() );
 //				dos.writeShort( desc.getIndex() );
@@ -851,7 +851,7 @@ implements Constants
 	
 		dos.writeShort( ugens.size() );
 		for( int i = 0; i < ugens.size(); i++ ) {
-			writeUGenSpec( dos, (UGen) ugens.get( i ));
+			writeUGenSpec( dos, ugens.get( i ));
 		}
 		
 		dos.writeShort( variants.size() );
@@ -865,7 +865,7 @@ implements Constants
 	{
 		dos.writeShort( constants.size() );
 		for( int i = 0; i < constants.size(); i++ ) {
-			dos.writeFloat( ((Constant) constants.get( i )).getValue() );
+			dos.writeFloat( (constants.get( i )).getValue() );
 		}
 	}
 
@@ -1156,7 +1156,7 @@ implements Constants
 //				} else {
 //					ugenInputs[ i ]	= ugen;
 //				}
-				ugenInputs[ i ]	= new UGenChannel( (UGen) def.ugens.get( ugenIndex ), outputIndex );
+				ugenInputs[ i ]	= new UGenChannel( def.ugens.get( ugenIndex ), outputIndex );
 			}
 		}
 
@@ -1184,27 +1184,27 @@ implements Constants
 	private static class UGenEnv
 	{
 		protected final UGen			ugen;
-		protected final List			collAnte;
-		protected final List			collDe;
+		protected final List<UGenEnv>			collAnte;
+		protected final List<UGenEnv>			collDe;
 		protected int					synthIndex;
 		
 		protected UGenEnv( UGen ugen, int synthIndex )
 		{
 			this.ugen		= ugen;
 			this.synthIndex	= synthIndex;
-			collAnte		= new ArrayList( ugen.getNumInputs() );
-			collDe			= new ArrayList();
+			collAnte		= new ArrayList<UGenEnv>( ugen.getNumInputs() );
+			collDe			= new ArrayList<UGenEnv>();
 		}
 	}
 
 	private static class SynthIndexComparator
-	implements Comparator
+	implements Comparator<UGenEnv>
 	{
 		protected SynthIndexComparator() { /* empty */ }
 		
-		public int compare( Object env1, Object env2 )
+		public int compare( UGenEnv env1, UGenEnv env2 )
 		{
-			return( ((UGenEnv) env1).synthIndex - ((UGenEnv) env2).synthIndex );
+			return( env1.synthIndex - env2.synthIndex );
 		}
 	}
 }

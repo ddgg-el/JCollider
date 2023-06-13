@@ -38,7 +38,7 @@ implements BlockAllocator
 {
 	private final int		size;
 	private final Block[]	array;
-	private	final Map		freed;
+	private	final Map<Integer, Set<Block>>		freed;
 	private final int		pos;
 	private int				top;
 
@@ -54,7 +54,7 @@ implements BlockAllocator
 		
 		array		= new Block[ size ];
 		array[ pos ]= new Block( pos, size - pos );
-		freed		= new HashMap();
+		freed		= new HashMap<Integer, Set<Block>>();
 		top			= pos;
 	}
 	
@@ -147,9 +147,9 @@ implements BlockAllocator
 		}
 	}
 	
-	public List getAllocatedBlocks()
+	public List<Block> getAllocatedBlocks()
 	{
-		final List	result = new ArrayList();
+		final List<Block>	result = new ArrayList<Block>();
 		Block		b;
 		
 		for( int i = 0; i < array.length; i++ ) {
@@ -163,18 +163,18 @@ implements BlockAllocator
 	
 	private Block findAvailable( int n )
 	{
-		Set			set;
-		Map.Entry	entry;
+		Set<Block>		set;
+		Map.Entry<Integer,Set<Block>>	entry;
 		
-		set = (Set) freed.get( new Integer( n ));
+		set = freed.get( Integer.valueOf( n ));
 	
-		if( set != null ) return (Block) set.iterator().next();
+		if( set != null ) return set.iterator().next();
 		
-		for( Iterator iter = freed.entrySet().iterator(); iter.hasNext(); ) {
-			entry = (Map.Entry) iter.next();
-			if( ((Integer) entry.getKey()).intValue() >= n ) {
-				set = (Set) entry.getValue();
-				if( set != null ) return (Block) set.iterator().next();
+		for( Iterator<Map.Entry<Integer,Set<Block>>> iter = freed.entrySet().iterator(); iter.hasNext(); ) {
+			entry = iter.next();
+			if( (entry.getKey()).intValue() >= n ) {
+				set = entry.getValue();
+				if( set != null ) return set.iterator().next();
 			}
 		}
 		
@@ -185,12 +185,12 @@ implements BlockAllocator
 	
 	private void addToFreed( Block b )
 	{
-		final Object	key = new Integer( b.size );
-		Set				set;
+		final Integer	key = Integer.valueOf( b.size );
+		Set<Block>		set;
 	
-		set = (Set) freed.get( key );
+		set = freed.get( key );
 		if( set == null ) {
-			set = new HashSet();
+			set = new HashSet<Block>();
 			freed.put( key, set );
 		}
 		set.add( b );
@@ -198,8 +198,8 @@ implements BlockAllocator
 	
 	private void removeFromFreed( Block b )
 	{
-		final Object	key = new Integer( b.size );
-		final Set		set	= (Set) freed.get( key );
+		final Integer	key = Integer.valueOf( b.size );
+		final Set<Block>		set	= freed.get( key );
 		
 		if( set != null ) {
 			set.remove( b );
@@ -264,7 +264,7 @@ implements BlockAllocator
 	
 	public void debug()
 	{
-		Map.Entry entry;
+		Map.Entry<Integer,Set<Block>> entry;
 	
 		System.err.println( this.getClass().getName() + ":\n\nArray:" );
 		for( int i = 0; i < array.length; i++ ) {
@@ -272,10 +272,10 @@ implements BlockAllocator
 				System.err.println( String.valueOf( i ) + ": " + array[ i ]);
 			}
 			System.err.println( "\nFree sets:" );
-			for( Iterator iter = freed.entrySet().iterator(); iter.hasNext(); ) {
-				entry = (Map.Entry) iter.next();
+			for( Iterator<Map.Entry<Integer, Set<Block>>> iter = freed.entrySet().iterator(); iter.hasNext(); ) {
+				entry = iter.next();
 				System.err.print( entry.getKey().toString() + ": [ " );
-				for( Iterator iter2 = ((Set) entry.getValue()).iterator(); iter2.hasNext(); ) {
+				for( Iterator<Block> iter2 = entry.getValue().iterator(); iter2.hasNext(); ) {
 					System.err.print( iter2.next().toString() + ", " );
 				}
 				System.err.println( "]" );

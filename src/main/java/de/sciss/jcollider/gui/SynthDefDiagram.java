@@ -84,6 +84,8 @@ import de.sciss.jcollider.UGenInput;
 public class SynthDefDiagram
 extends JFrame
 {
+	private static final long serialVersionUID = 42L; // XXX:Serialized Object ...is this really necessary?
+
 	private final Font		fntGUI	= new Font( "SansSerif", Font.PLAIN, 10 );
 
 	private static final String[]	ZOOMS	= {
@@ -108,7 +110,7 @@ extends JFrame
 		final SynthDefView	synthDefView	= new SynthDefView( def );
 		final JScrollPane	scroll			= new JScrollPane( synthDefView );
 		final Box			box				= Box.createHorizontalBox();
-		final JComboBox		ggZoom			= new JComboBox();
+		final JComboBox<String>		ggZoom	= new JComboBox<String>();
 
 		for( int i = 0; i < ZOOMS.length; i++ ) {
 			ggZoom.addItem( ZOOMS[ i ]);
@@ -149,7 +151,7 @@ extends JFrame
 	protected static String formatConst( float value )
 	{
 		if( value == Math.round( value )) return String.valueOf( Math.round( value ));
-		return frmtConst.format( new Float( value ));
+		return frmtConst.format( Float.valueOf( value ));
 	}
 
 	protected static final Font fntUGen			= new Font( "Lucida Grande", Font.PLAIN, 10 );	// XXX bad for non-macos
@@ -166,14 +168,16 @@ extends JFrame
 	extends JPanel
 	implements MouseListener, MouseMotionListener
 	{
+		private static final long serialVersionUID = 42L; // XXX:Serialized Object ...is this really necessary?
+
 		private static final double	HPAD		= 12.0;
 		private static final double	VPAD		= 12.0;
 		private static final int	MAX_WIDTH	= 640;	// linebreak after exceeding this width
 			
-		private final List				collUGenViews		= new ArrayList();
-		private final List				collSelectedViews	= new ArrayList();
-		private final List				collWires			= new ArrayList();
-		private final Map				mapUGensToViews		= new HashMap();
+		private final List<UGenView>		collUGenViews		= new ArrayList<UGenView>();
+		private final List<UGenView>		collSelectedViews	= new ArrayList<UGenView>();
+		private final List<Wire>			collWires			= new ArrayList<Wire>();
+		private final Map<UGen, UGenView>	mapUGensToViews		= new HashMap<UGen,UGenView>();
 		
 		private boolean recalc = true;
 		
@@ -204,11 +208,11 @@ extends JFrame
 		
 		private void createBoxes( Graphics2D g2, FontMetrics fm, FontMetrics fm2 )
 		{
-			final List	children	= def.getUGens();
-			final List	verbaut		= new ArrayList();
-			final List	neuVerbaut	= new ArrayList();
-			final List	constRects	= new ArrayList();
-			final List	ugenRects	= new ArrayList();
+			final List<UGen>	children	= def.getUGens();
+			final List<UGen>	verbaut		= new ArrayList<UGen>();
+			final List<UGen>	neuVerbaut	= new ArrayList<UGen>();
+			final List<Rectangle2D>	constRects	= new ArrayList<Rectangle2D>();
+			final List<Rectangle2D>	ugenRects	= new ArrayList<Rectangle2D>();
 
 			final double	h	= fm.getHeight() + VPAD;
 			
@@ -233,8 +237,8 @@ extends JFrame
 			do {
 				x		= 0;
 childLp:		for( int i = 0; i < children.size(); i++ ) {
-					ugen	= (UGen) children.get( i );
-					ui		= UGenInfo.infos == null ? null : (UGenInfo) UGenInfo.infos.get( ugen.getName() );
+					ugen	= children.get( i );
+					ui		= UGenInfo.infos == null ? null : UGenInfo.infos.get( ugen.getName() );
 					hpadMax	= HPAD;
 					for( int j = 0; j < ugen.getNumInputs(); j++ ) {
 						inp = ugen.getInput( j );
@@ -261,7 +265,7 @@ childLp:		for( int i = 0; i < children.size(); i++ ) {
 					for( int j = 0; j < ugen.getNumInputs(); j++ ) {
 						inp = ugen.getInput( j );
 						if( inp instanceof UGenChannel ) {
-							uv2		= (UGenView) mapUGensToViews.get( ((UGenChannel) inp).getUGen() );
+							uv2		= mapUGensToViews.get( ((UGenChannel) inp).getUGen() );
 							wire	= new Wire( uv2, ((UGenChannel) inp).getChannel(), uv, j );
 							collWires.add( wire );							
 						}
@@ -274,9 +278,9 @@ childLp:		for( int i = 0; i < children.size(); i++ ) {
 				// shift line downwards if there are vertical overlappings
 				incY = 0.0;
 				for( int i = 0; i < constRects.size(); i++ ) {
-					rect	= (Rectangle2D) constRects.get( i );
+					rect	= constRects.get( i );
 					for( int j = 0; j < ugenRects.size(); j++ ) {
-						rect2	= (Rectangle2D) ugenRects.get( j );
+						rect2	= ugenRects.get( j );
 //System.err.println( "const "+rect.getX()+","+rect.getY()+","+rect.getWidth()+","+rect.getHeight()+"; ugen "+
 //							 rect2.getX()+","+rect2.getY()+","+rect2.getWidth()+","+rect2.getHeight() );
 						if( rect.intersects( rect2 )) {
@@ -289,7 +293,7 @@ childLp:		for( int i = 0; i < children.size(); i++ ) {
 				ugenRects.clear();
 				constRects.clear();
 				for( int i = 0; i < neuVerbaut.size(); i++ ) {
-					uv	= (UGenView) mapUGensToViews.get( neuVerbaut.get( i ));
+					uv	= mapUGensToViews.get( neuVerbaut.get( i ));
 					if( incY > 0.0 ) {
 						pt	= uv.getLocation();
 						uv.setLocation( new Point2D.Double( pt.getX(), pt.getY() + incY ));
@@ -299,7 +303,7 @@ childLp:		for( int i = 0; i < children.size(); i++ ) {
 				
 				verbaut.addAll( neuVerbaut );
 				for( int i = 0; i < neuVerbaut.size(); i++ ) {
-					uv	= (UGenView) mapUGensToViews.get( neuVerbaut.get( i ));
+					uv	= mapUGensToViews.get( neuVerbaut.get( i ));
 					ugenRects.add( uv.getContainer() );
 				}
 				neuVerbaut.clear();
@@ -336,11 +340,11 @@ childLp:		for( int i = 0; i < children.size(); i++ ) {
 		{
 			if( collUGenViews.isEmpty() ) return;
 
-			UGenView uv		= (UGenView) collUGenViews.get( 0 );
+			UGenView uv		= collUGenViews.get( 0 );
 			boundingBox		= uv.getBoundingBox();
 		
 			for( int i = 1; i < collUGenViews.size(); i++ ) {
-				uv = (UGenView) collUGenViews.get( i );
+				uv = collUGenViews.get( i );
 				Rectangle2D.union( boundingBox, uv.getBoundingBox(), boundingBox );
 			}
 			
@@ -355,7 +359,7 @@ childLp:		for( int i = 0; i < children.size(); i++ ) {
 				final int	dy = Math.max( 0, (int) (5 - boundingBox.getY()) );
 				Point2D		pt;
 				for( int i = 0; i < collUGenViews.size(); i++ ) {
-					uv	= (UGenView) collUGenViews.get( i );
+					uv	= collUGenViews.get( i );
 					pt	= uv.getLocation();
 					uv.setLocation( new Point2D.Double( pt.getX() + dx, pt.getY() + dy ));
 				}
@@ -392,18 +396,18 @@ childLp:		for( int i = 0; i < children.size(); i++ ) {
 			Wire		wire;
 			
 			for( int i = 0; i < collUGenViews.size(); i++ ) {
-				uv = (UGenView) collUGenViews.get( i );
+				uv = collUGenViews.get( i );
 				uv.paint( g2, fm, false );
 			}
 
 			for( int i = 0; i < collWires.size(); i++ ) {
-				wire = (Wire) collWires.get( i );
+				wire = collWires.get( i );
 				wire.paint( g2 );
 			}
 			
 			g2.setFont( fntToolTip );
 			for( int i = 0; i < collUGenViews.size(); i++ ) {
-				uv = (UGenView) collUGenViews.get( i );
+				uv = collUGenViews.get( i );
 				if( uv.isShowingToolTips() ) uv.paintToolTips( g2, fm2 );
 			}
 			g2.setFont( fntUGen );
@@ -411,7 +415,7 @@ childLp:		for( int i = 0; i < children.size(); i++ ) {
 			if( dragStarted ) {
 				g2.translate( dragCurrentPt.getX() - dragStartPt.getX(), dragCurrentPt.getY() - dragStartPt.getY() );
 				for( int i = 0; i < collSelectedViews.size(); i++ ) {
-					uv = (UGenView) collSelectedViews.get( i );
+					uv = collSelectedViews.get( i );
 					uv.paint( g2, fm, true );
 				}
 			}
@@ -435,7 +439,7 @@ childLp:		for( int i = 0; i < children.size(); i++ ) {
 			UGenView	uv;
 		
 			for( int i = 0; i < collUGenViews.size(); i++ ) {
-				uv = (UGenView) collUGenViews.get( i );
+				uv = collUGenViews.get( i );
 				if( uv.contains( mousePt )) {
 					hitView = uv;
 					break;
@@ -446,7 +450,7 @@ childLp:		for( int i = 0; i < children.size(); i++ ) {
 				((hitView == null) || !hitView.isSelected()) ) {		// deselect all
 				
 				for( int i = 0; i < collSelectedViews.size(); i++ ) {
-					uv = (UGenView) collSelectedViews.get( i );
+					uv = collSelectedViews.get( i );
 					uv.setSelected( false );
 				}
 				collSelectedViews.clear();
@@ -477,7 +481,7 @@ childLp:		for( int i = 0; i < children.size(); i++ ) {
 			} else {
 				if( e.getClickCount() == 2 ) {
 					for( int i = 0; i < collUGenViews.size(); i++ ) {
-						uv = (UGenView) collUGenViews.get( i );
+						uv = collUGenViews.get( i );
 						uv.showToolTips( false );
 					}
 					repaint	= true;
@@ -504,7 +508,7 @@ childLp:		for( int i = 0; i < children.size(); i++ ) {
 				dx				= dragCurrentPt.getX() - dragStartPt.getX();
 				dy				= dragCurrentPt.getY() - dragStartPt.getY();
 				for( int i = 0; i < collSelectedViews.size(); i++ ) {
-					uv	= (UGenView) collSelectedViews.get( i );
+					uv	= collSelectedViews.get( i );
 					pt	= uv.getLocation();
 					uv.setLocation( new Point2D.Double( pt.getX() + dx, pt.getY() + dy ));
 				}
@@ -611,9 +615,9 @@ childLp:		for( int i = 0; i < children.size(); i++ ) {
 		private final Shape				shpCons;
 		private final Shape				shpConsts;
 		private final Shape				shpToolTips;
-		private final List				collConsts		= new ArrayList();	// elements = PositionedString
-		private final List				collConstBounds	= new ArrayList();	// elements = Rectangle2D
-		private final List				collToolTips	= new ArrayList();	// elements = PositionedString
+		private final List<PositionedString>	collConsts	= new ArrayList<PositionedString>();	// elements = PositionedString
+		private final List<Rectangle2D>			collConstBounds	= new ArrayList<Rectangle2D>();	// elements = Rectangle2D
+		private final List<PositionedString>	collToolTips	= new ArrayList<PositionedString>();	// elements = PositionedString
 		private final Rectangle2D		bounds;
 		
 		private static final Stroke	strkCons	= new BasicStroke( 2.0f );
@@ -640,8 +644,8 @@ childLp:		for( int i = 0; i < children.size(); i++ ) {
 		
 		private final Point2D[]	inletLocations, outletLocations;
 		
-		private final List	inletWires	= new ArrayList(); // elements = Wire
-		private final List	outletWires	= new ArrayList(); // elements = Wire
+		private final List<Wire>	inletWires	= new ArrayList<Wire>(); // elements = Wire
+		private final List<Wire>	outletWires	= new ArrayList<Wire>(); // elements = Wire
 		
 		private boolean selected = false;
 		private boolean toolTips = false;
@@ -804,21 +808,21 @@ childLp:		for( int i = 0; i < children.size(); i++ ) {
 		{
 			bounds.setFrame( topLeft.getX(), topLeft.getY(), bounds.getWidth(), bounds.getHeight() );
 			for( int i = 0; i < inletWires.size(); i++ ) {
-				((Wire) inletWires.get( i )).recalcPositions();
+				(inletWires.get( i )).recalcPositions();
 			}
 			for( int i = 0; i < outletWires.size(); i++ ) {
-				((Wire) outletWires.get( i )).recalcPositions();
+				(outletWires.get( i )).recalcPositions();
 			}
 		}
 		
-		protected List getConstBounds()
+		protected List<Rectangle2D> getConstBounds()
 		{
-			final List result = new ArrayList( collConstBounds.size() );
+			final List<Rectangle2D> result = new ArrayList<Rectangle2D>( collConstBounds.size() );
 			
 			Rectangle2D rect;
 			
 			for( int i = 0; i < collConstBounds.size(); i++ ) {
-				rect = (Rectangle2D) collConstBounds.get( i );
+				rect = collConstBounds.get( i );
 				result.add( new Rectangle2D.Double( rect.getX() + bounds.getX(), rect.getY() + bounds.getY(),
 													rect.getWidth(), rect.getHeight() ));
 			}
@@ -829,10 +833,10 @@ childLp:		for( int i = 0; i < children.size(); i++ ) {
 		protected Rectangle2D getBoundingBox()
 		{
 			final Rectangle2D		result		= getContainer();
-			final List				constBounds = getConstBounds();
+			final List<Rectangle2D>	constBounds = getConstBounds();
 
 			for( int i = 0; i < constBounds.size(); i++ ) {
-				Rectangle2D.union( result, (Rectangle2D) constBounds.get( i ), result );
+				Rectangle2D.union( result, constBounds.get( i ), result );
 			}
 
 			return result;
@@ -882,7 +886,7 @@ childLp:		for( int i = 0; i < children.size(); i++ ) {
 			
 			g2.setPaint( dragging ? pntConstD : pntConst );
 			for( int i = 0; i < collConsts.size(); i++ ) {
-				pStr	= (PositionedString) collConsts.get( i );
+				pStr	= collConsts.get( i );
 				g2.drawString( pStr.str, (float) pStr.x, (float) pStr.y );
 			}
 			g2.draw( shpConsts );
@@ -908,7 +912,7 @@ childLp:		for( int i = 0; i < children.size(); i++ ) {
 			g2.fill( shpToolTips );
 			g2.setPaint( pntToolTipTxt );
 			for( int i = 0; i < collToolTips.size(); i++ ) {
-				pStr	= (PositionedString) collToolTips.get( i );
+				pStr	= collToolTips.get( i );
 				g2.translate( pStr.x, pStr.y );
 				g2.rotate( minus90 );
 				g2.drawString( pStr.str, 0, 0 );

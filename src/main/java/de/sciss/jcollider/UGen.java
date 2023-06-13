@@ -630,10 +630,10 @@ implements Constants, GraphElem
 	
 	private static GraphElem construct( String name, Object rate, int numChannels, GraphElem[] inputs )
 	{
-		final UGenInfo			ui = (UGenInfo) UGenInfo.infos.get( name );
+		final UGenInfo			ui = UGenInfo.infos.get( name );
 		final GraphElem[]		ugens;
 		final UGenInput[][]		ugenIns;
-		final java.util.List	args;
+		final java.util.List<UGenInput[]>	args;
 		final boolean			hasArray;
 		final int				outChan;
 		final Object[]			outRates;
@@ -660,10 +660,10 @@ implements Constants, GraphElem
 			hasArray	= true;
 			numArgs--;
 			numIns--;
-			args		= new ArrayList( numArgs + inputs[ numIns ].getNumOutputs() );
+			args		= new ArrayList<UGenInput[]>( numArgs + inputs[ numIns ].getNumOutputs() );
 		} else {
 			hasArray	= false;
-			args		= new ArrayList( numArgs );
+			args		= new ArrayList<UGenInput[]>( numArgs );
 		}
 		
 		// fill in the non-array args
@@ -712,7 +712,7 @@ implements Constants, GraphElem
 		
 		// fill in and expand the ugen inputs
 		for( i = 0; i < numArgs; i++ ) {
-			ins	= (UGenInput[]) args.get( i );
+			ins	= args.get( i );
 			for( j = 0; j < chanExp; j++ ) {
 				ugenIns[ j ][ i ] = ins[ j % ins.length ];
 			}

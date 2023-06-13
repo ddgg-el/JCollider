@@ -68,6 +68,7 @@ implements TreeSelectionListener, TreeModelListener
 	 *	Flag for the constructor: create a button
 	 *	bar to message the nodes.
 	 */
+	private static final long serialVersionUID = 42L; // XXX:Serialized Object ...is this really necessary?
 	public static final int	BUTTONS	= 0x01;
 
 	private final NodeTreeManager	ntm;
@@ -78,7 +79,7 @@ implements TreeSelectionListener, TreeModelListener
 	protected boolean				selectionContainsGroups		= false;
 	protected boolean				selectionContainsPlaying	= false;
 	protected boolean				selectionContainsPausing	= false;
-	protected final List			collSelectedNodes			= new ArrayList();
+	protected final List<Node>		collSelectedNodes			= new ArrayList<Node>();
 	
 	private ActionPauseResume	actionPauseResume			= null;
 	private ActionFree			actionFree					= null;
@@ -292,6 +293,7 @@ implements TreeSelectionListener, TreeModelListener
 	private abstract class NodeAction
 	extends AbstractAction
 	{
+		private static final long serialVersionUID = 42L; // XXX:Serialized Object ...is this really necessary?
 		protected NodeAction( String name )
 		{
 			super( name );
@@ -301,18 +303,18 @@ implements TreeSelectionListener, TreeModelListener
 		// NodeWatcher geben, die mehrere Server abhoeren
 		public void actionPerformed( ActionEvent e )
 		{
-			final HashMap	mapServersToBundles	= new HashMap();
+			final HashMap<Server, OSCBundle>	mapServersToBundles	= new HashMap<Server, OSCBundle>();
 			OSCBundle		bndl;
 			OSCMessage		msg;
 			Server			server;
 			Node			node;
 		
 			for( int i = 0; i < collSelectedNodes.size(); i++ ) {
-				node		= (Node) collSelectedNodes.get( i );
+				node		= collSelectedNodes.get( i );
 				msg			= createMessage( node );
 				if( msg == null ) continue;
 				server		= node.getServer();
-				bndl		= (OSCBundle) mapServersToBundles.get( server );
+				bndl		= mapServersToBundles.get( server );
 				if( bndl == null ) {
 					bndl	= new OSCBundle();
 					mapServersToBundles.put( server, bndl );
@@ -320,10 +322,10 @@ implements TreeSelectionListener, TreeModelListener
 				bndl.addPacket( msg );
 			}
 			
-			for( Iterator iter = mapServersToBundles.keySet().iterator(); iter.hasNext(); ) {
-				server = (Server) iter.next();
+			for( Iterator<Server> iter = mapServersToBundles.keySet().iterator(); iter.hasNext(); ) {
+				server = iter.next();
 				try {
-					server.sendBundle( (OSCBundle) mapServersToBundles.get( server ));
+					server.sendBundle( mapServersToBundles.get( server ));
 				}
 				catch( IOException e1 ) {
 					System.err.println( e1.getClass().getName() + " : " + e1.getLocalizedMessage() );
@@ -339,6 +341,7 @@ implements TreeSelectionListener, TreeModelListener
 	private class ActionPauseResume
 	extends NodeAction
 	{
+		private static final long serialVersionUID = 42L; // XXX:Serialized Object ...is this really necessary?
 		private static final String	NAME_PAUSE	= "Pause";
 		private static final String	NAME_RESUME	= "Resume";
 	
@@ -367,6 +370,7 @@ implements TreeSelectionListener, TreeModelListener
 	private class ActionFree
 	extends NodeAction
 	{
+		private static final long serialVersionUID = 42L; // XXX:Serialized Object ...is this really necessary?
 		protected ActionFree()
 		{
 			super( "Free" );
@@ -387,6 +391,7 @@ implements TreeSelectionListener, TreeModelListener
 	private class ActionFreeAll
 	extends NodeAction
 	{
+		private static final long serialVersionUID = 42L; // XXX:Serialized Object ...is this really necessary?
 		protected ActionFreeAll()
 		{
 			super( "Free All" );
@@ -411,6 +416,7 @@ implements TreeSelectionListener, TreeModelListener
 	private class ActionDeepFree
 	extends NodeAction
 	{
+		private static final long serialVersionUID = 42L; // XXX:Serialized Object ...is this really necessary?
 		protected ActionDeepFree()
 		{
 			super( "Deep Free" );
@@ -435,6 +441,7 @@ implements TreeSelectionListener, TreeModelListener
 	private class ActionTrace
 	extends NodeAction
 	{
+		private static final long serialVersionUID = 42L; // XXX:Serialized Object ...is this really necessary?
 		protected ActionTrace()
 		{
 			super( "Trace" );
@@ -455,6 +462,7 @@ implements TreeSelectionListener, TreeModelListener
 	private static class TreeNodeRenderer
 	extends DefaultTreeCellRenderer
 	{
+		private static final long serialVersionUID = 42L; // XXX:Serialized Object ...is this really necessary?
 // doch 'n bisschen krass
 //		private static final Color	colrPlaying	= new Color( 0x00, 0x50, 0x30 );
 		private static final Color	colrPlaying	= Color.black;

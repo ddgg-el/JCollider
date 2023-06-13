@@ -187,7 +187,7 @@ implements Constants
 	public OSCMessage setMsg( float value )
 	{
 		return new OSCMessage( "/c_set", new Object[] {
-			new Integer( getIndex() ), new Float( value )});
+			Integer.valueOf( getIndex() ), Float.valueOf( value )});
 	}
 
 	/**
@@ -202,8 +202,8 @@ implements Constants
 		final Object[] args = new Object[ numEntries << 1 ];
 		final int idx = getIndex();
 		for( int i = 0, j = 0; i < numEntries; i++ ) {
-			args[ j++ ] = new Integer( idx + offsets[ i ]);
-			args[ j++ ] = new Float( values[ i ]);
+			args[ j++ ] = Integer.valueOf( idx + offsets[ i ]);
+			args[ j++ ] = Float.valueOf( values[ i ]);
 		}
 		return new OSCMessage( "/c_set", args );
 	}
@@ -227,10 +227,10 @@ implements Constants
 	{
 		final int numValues = values.length;
 		final Object[] args = new Object[ numValues + 2 ];
-		args[ 0 ] = new Integer( getIndex() );
-		args[ 1 ] = new Integer( numValues );
+		args[ 0 ] = Integer.valueOf( getIndex() );
+		args[ 1 ] = Integer.valueOf( numValues );
 		for( int i = 0, j = 2; i < numValues; i++, j++ ) {
-			args[ j ] = new Float( values[ i ]);
+			args[ j ] = Float.valueOf( values[ i ]);
 		}
 		return new OSCMessage( "/c_setn", args );
 	}
@@ -250,12 +250,12 @@ implements Constants
 		final int idx = getIndex();
 		final Object[] args = new Object[ (numEntries << 1) + numValues ];
 		for( int i = 0, j = 0; i < numEntries; i++ ) {
-			args[ j++ ] = new Integer( idx + offsets[ i ]);
+			args[ j++ ] = Integer.valueOf( idx + offsets[ i ]);
 			final float[] vals = values[ i ];
 			final int numVals = vals.length;
-			args[ j++ ] = new Integer( numVals );
+			args[ j++ ] = Integer.valueOf( numVals );
 			for( int k = 0; k < numVals; k++, j++ ) {
-				args[ j ] = new Float( vals[ k ]);
+				args[ j ] = Float.valueOf( vals[ k ]);
 			}
 		}
 		return new OSCMessage( "/c_setn", args );
@@ -293,7 +293,7 @@ implements Constants
 	public OSCMessage fillMsg( int offset, int numChans, float value )
 	{
 		return new OSCMessage( "/c_fill", new Object[] {
-			new Integer( getIndex() + offset ), new Integer( numChans ), new Float( value )});
+			Integer.valueOf( getIndex() + offset ), Integer.valueOf( numChans ), Float.valueOf( value )});
 	}
 	
 	public OSCMessage fillMsg( int[] numChans, float[] values )
@@ -320,9 +320,9 @@ implements Constants
 		final Object[] args = new Object[ numEntries * 3 ];
 		final int idx = getIndex();
 		for( int i = 0, j = 0; i < numEntries; i++ ) {
-			args[ j++ ] = new Integer( idx + offsets[ i ]);
-			args[ j++ ] = new Integer( numChans[ i ]);
-			args[ j++ ] = new Integer( idx + offsets[ i ]);
+			args[ j++ ] = Integer.valueOf( idx + offsets[ i ]);
+			args[ j++ ] = Integer.valueOf( numChans[ i ]);
+			args[ j++ ] = Integer.valueOf( idx + offsets[ i ]);
 		}
 		
 		return new OSCMessage( "/c_fill", args );
@@ -411,7 +411,7 @@ implements Constants
 	
 	public OSCMessage getMsg()
 	{
-		return new OSCMessage( "/c_get", new Object[] { new Integer( getIndex() )});
+		return new OSCMessage( "/c_get", new Object[] { Integer.valueOf( getIndex() )});
 	}
 
 	/**
@@ -423,7 +423,7 @@ implements Constants
 		final Object[] args = new Object[ numOffsets ];
 		final int idx = getIndex();
 		for( int i = 0; i < numOffsets; i++ ) {
-			args[ i ] = new Integer( idx + offsets[ i ]);
+			args[ i ] = Integer.valueOf( idx + offsets[ i ]);
 		}
 		return new OSCMessage( "/c_get", args );
 	}
@@ -441,7 +441,7 @@ implements Constants
 	public OSCMessage getnMsg( int offset, int numChans )
 	{
 		return new OSCMessage( "/c_getn", new Object[] {
-			new Integer( getIndex() + offset ), new Integer( numChans )});
+			Integer.valueOf( getIndex() + offset ), Integer.valueOf( numChans )});
 	}
 	
 	/**
@@ -456,8 +456,8 @@ implements Constants
 		final int idx = getIndex();
 		final Object[] args = new Object[ numEntries << 1 ];
 		for( int i = 0, j = 0; i < numEntries; i++ ) {
-			args[ j++ ] = new Integer( idx + offsets[ i ]);
-			args[ j++ ] = new Integer( numChans[ i ]);
+			args[ j++ ] = Integer.valueOf( idx + offsets[ i ]);
+			args[ j++ ] = Integer.valueOf( numChans[ i ]);
 		}
 		return new OSCMessage( "/c_getn", args );
 	}

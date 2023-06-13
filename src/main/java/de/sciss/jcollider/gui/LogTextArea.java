@@ -44,6 +44,7 @@ import javax.swing.ScrollPaneConstants;
 public class LogTextArea
 extends JTextArea
 {
+	private static final long serialVersionUID = 42L; // XXX:Serialized Object ...is this really necessary?
 	protected final boolean		useLogFile;
 	protected final File		logFile;
 	private final PrintStream	outStream;
@@ -239,6 +240,7 @@ public AbstractAction getClearAction()
 //	extends MenuAction
 extends AbstractAction
 	{
+		private static final long serialVersionUID = 42L; // XXX:Serialized Object ...is this really necessary?
 		protected ActionClear() { /* empty */ }
 		
 		public void actionPerformed( ActionEvent e )

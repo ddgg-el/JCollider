@@ -6,6 +6,7 @@ import de.sciss.jcollider.UGenInfo;
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 
 public class Main {
     public static void main( String args[] )
@@ -41,8 +42,10 @@ public class Main {
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
                     try {
-                        final Class c = Class.forName(demoClass);
-                        c.newInstance();
+                        // FIXME: not sure if this is the way of instantiating Demo
+                        final Class<?> c = Class.forName(demoClass);
+                        Constructor<?> constructor = c.getDeclaredConstructor();
+                        Object instance = constructor.newInstance();
                     } catch (Exception e1) {
                         System.err.println(e1);
                         System.exit(1);

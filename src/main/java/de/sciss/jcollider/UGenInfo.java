@@ -37,6 +37,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+
 /**
  *	As stated elsewhere, it was decided to not implement separate
  *	classes for the different unit generators in JCollider. Instead
@@ -70,7 +71,7 @@ import org.xml.sax.SAXParseException;
  *	@see		UGen#ar( String )
  */
 public class UGenInfo
-		implements Constants, Comparable {
+		implements Constants, Comparable<UGenInfo> {
 	private static final String UGENDEFS_DTD0 	= "ugendefs.dtd";
 	private static final String UGENDEFS_DTD 	= "de/sciss/jcollider/" + UGENDEFS_DTD0;
 
@@ -91,7 +92,7 @@ public class UGenInfo
 	 *	will return the dataset for the UnaryOpUGen ugen
 	 *	(there is only one dataset for all the operators).
 	 */
-	public static Map	infos;
+	public static Map<String, UGenInfo>	infos;
 
 	/**
 	 *	Value for <code>outputType</code> : the ugen
@@ -127,7 +128,7 @@ public class UGenInfo
 	 *	@see	Constants#kAudioRate
 	 *	@see	Constants#kControlRate
 	 */
-	public final Set		rates;
+	public final Set<Object>		rates;
 	/**
 	 *	Maps special names (<code>String</code>s) to
 	 *	specialIndex values (<code>Integer</code>s).
@@ -136,7 +137,7 @@ public class UGenInfo
 	 *	For UGens which do not deal with special indices,
 	 *	this field is <code>null</code>
 	 */
-	public final Map		specials;		// maps String special name to Integer( specialIndex ) ; may be null
+	public final Map<String, Integer>	specials;		// maps String special name to Integer( specialIndex ) ; may be null
 	/**
 	 *	Defines how the number of outputs is
 	 *	determined. One of <code>FIXED</code>, <code>ARG</code> or <code>ARRAYSIZE<code>
@@ -165,7 +166,7 @@ public class UGenInfo
 	 */
 	public final float		outputMul;
 
-	private UGenInfo(String className, Arg[] args, Set rates, Map specials,
+	private UGenInfo(String className, Arg[] args, Set<Object> rates, Map<String, Integer> specials,
 					 int outputType, int outputVal, float outputMul) {
 		this.className 	= className;
 		this.args 		= args;
@@ -176,9 +177,9 @@ public class UGenInfo
 		this.outputMul 	= outputMul;
 	}
 
-	public int compareTo(Object o) {
-		if (o instanceof UGenInfo) {
-			return this.className.compareTo(((UGenInfo) o).className);
+	public int compareTo(UGenInfo o) {
+		if (o instanceof UGenInfo) { // XXX: maybe redundant?
+			return this.className.compareTo(o.className);
 		} else {
 			throw new ClassCastException();
 		}
@@ -197,10 +198,10 @@ public class UGenInfo
 	{
 		if( specials == null ) return className;
 		
-		final Integer	specialIndex	= new Integer( ugen.getSpecialIndex() );
+		final Integer	specialIndex	= Integer.valueOf( ugen.getSpecialIndex() );
 		String			specialName;
 		
-		for( Iterator iter = specials.keySet().iterator(); iter.hasNext(); ) {
+		for( Iterator<String> iter = specials.keySet().iterator(); iter.hasNext(); ) {
 			specialName = iter.next().toString();
 			if( specials.get( specialName ).equals( specialIndex )) return specialName;
 		}
@@ -277,7 +278,7 @@ public class UGenInfo
 		boolean		b = false;
 	
 		out.print( "UGenInfo(\"" + className + "\")\n rates: " );
-		for( Iterator iter = rates.iterator(); iter.hasNext(); b = true ) {
+		for( Iterator<Object> iter = rates.iterator(); iter.hasNext(); b = true ) {
 			if( b ) out.print( ", " );
 			out.print( iter.next() );
 		}
@@ -348,7 +349,7 @@ public class UGenInfo
 		final DocumentBuilderFactory	builderFactory;
 		final DocumentBuilder			builder;
 		final NodeList					ugenList;
-		final Map						map			= new HashMap();
+		final Map<String,UGenInfo>		map	= new HashMap<String,UGenInfo>();
 		Element							node, elem;
 		UGenInfo						info;
 
@@ -366,7 +367,7 @@ public class UGenInfo
 				info		= decodeUGenNode( domDoc, elem );
 				map.put( info.className, info );
 				if( info.specials != null ) {
-					for( Iterator iter = info.specials.keySet().iterator(); iter.hasNext(); ) {
+					for( Iterator<String> iter = info.specials.keySet().iterator(); iter.hasNext(); ) {
 						map.put( iter.next(), info );	// alias entry
 					}
 				}
@@ -406,20 +407,21 @@ public class UGenInfo
 	public static void writeBinaryDefinitions( File path )
 	throws IOException
 	{
-		final RandomAccessFile	raf;
-		final UGenInfo[]		infos2	= new UGenInfo[ infos.size() ];
-		UGenInfo				info;
-		int						numInfos, iRates, flags, numSpecials;
-		Map.Entry				me;
+		final RandomAccessFile		raf;
+		final UGenInfo[]			infos2	= new UGenInfo[ infos.size() ];
+		UGenInfo					info;
+		int							numInfos, iRates, flags, numSpecials;
+		Map.Entry<String,UGenInfo>	me;
+		Map.Entry<String, Integer>	special;
 	
 		if( path.exists() ) {
 			if( !path.delete() ) throw new IOException( "Could not overwrite " + path );
 		}
 		raf = new RandomAccessFile( path, "rw" );
 		numInfos = 0;
-		for( Iterator iter = infos.entrySet().iterator(); iter.hasNext(); ) {
-			me		= (Map.Entry) iter.next();
-			info	= (UGenInfo) me.getValue();
+		for( Iterator<Map.Entry<String,UGenInfo>> iter = infos.entrySet().iterator(); iter.hasNext(); ) {
+			me		= iter.next();
+			info	= me.getValue();
 			if( me.getKey().equals( info.className )) {
 				infos2[ numInfos++ ] = info;
 			}
@@ -460,10 +462,10 @@ public class UGenInfo
 				numSpecials = info.specials == null ? 0 : info.specials.size();
 				raf.writeShort( numSpecials );
 				if( numSpecials > 0 ) {
-					for( Iterator iter = info.specials.entrySet().iterator(); iter.hasNext(); ) {
-						me = (Map.Entry) iter.next();
-						raf.writeUTF(  me.getKey().toString() );
-						raf.writeShort( ((Number) me.getValue()).shortValue() );
+					for( Iterator<Map.Entry<String, Integer>> iter = info.specials.entrySet().iterator(); iter.hasNext(); ) {
+						special = iter.next();
+						raf.writeUTF(  special.getKey().toString() );
+						raf.writeShort( ( special.getValue()).shortValue() );
 					}
 				}
 			}
@@ -500,19 +502,19 @@ public class UGenInfo
 	public static void readBinaryDefinitions()
 	throws IOException
 	{
-		final DataInputStream	dis;
-		final Map				map;
-		final int 				numInfos;
-		final UGenInfo[]		infos;
-		String					className, name;
-		int						mapSize, iRates, outputType, outputVal;
-		int						numArgs, flags, specialValue, numSpecials;
-		float					outputMul, min, max, def;
-		boolean					isArray;
-		UGenInfo				info;
-		Arg[]					args;
-		Set						rates;
-		Map						specials;
+		final DataInputStream		dis;
+		final Map<String, UGenInfo>	map;
+		final int 					numInfos;
+		final UGenInfo[]			infos;
+		String						className, name;
+		int							mapSize, iRates, outputType, outputVal;
+		int							numArgs, flags, specialValue, numSpecials;
+		float						outputMul, min, max, def;
+		boolean						isArray;
+		UGenInfo					info;
+		Arg[]						args;
+		Set<Object>					rates;
+		Map<String, Integer>		specials;
 
 		final InputStream is = UGenInfo.class.getResourceAsStream("ugendefs.bin");
 		// dis = new DataInputStream(new BufferedInputStream(ClassLoader.getSystemClassLoader().getResourceAsStream("de/sciss/jcollider/ugendefs.bin")));
@@ -526,7 +528,7 @@ public class UGenInfo
 			for( int i = 0; i < numInfos; i++ ) {
 				className	= dis.readUTF();
 				iRates		= dis.readByte();
-				rates		= new HashSet( 4 );
+				rates		= new HashSet<Object>( 4 );
 				if( (iRates & 0x01) != 0 ) rates.add( kScalarRate );
 				if( (iRates & 0x02) != 0 ) rates.add( kControlRate );
 				if( (iRates & 0x04) != 0 ) rates.add( kAudioRate );
@@ -547,23 +549,23 @@ public class UGenInfo
 				}
 				numSpecials	= dis.readShort();
 				if( numSpecials > 0 ) {
-					specials = new HashMap( numSpecials );
+					specials = new HashMap<String,Integer>( numSpecials );
 					for( int j = 0; j < numSpecials; j++ ) {
 						name			= dis.readUTF();
 						specialValue	= dis.readShort();
-						specials.put( name, new Integer( specialValue ));
+						specials.put( name, Integer.valueOf( specialValue ));
 					}
 				} else {
 					specials = null;
 				}
 				infos[ i ]	= new UGenInfo( className, args, rates, specials, outputType, outputVal, outputMul );
 			}
-			map = new HashMap( mapSize );
+			map = new HashMap<String, UGenInfo>( mapSize );
 			for( int i = 0; i < numInfos; i++ ) {
 				info	= infos[ i ];
 				map.put( info.className, info );
 				if( info.specials != null ) {
-					for( Iterator iter = info.specials.keySet().iterator(); iter.hasNext(); ) {
+					for( Iterator<String> iter = info.specials.keySet().iterator(); iter.hasNext(); ) {
 						map.put( iter.next(), info );	// alias entry
 					}
 				}
@@ -577,13 +579,13 @@ public class UGenInfo
 	}
 
 	private static UGenInfo decodeUGenNode(Document domDoc, Element node) {
-		final Set				rates		= new HashSet();
-		final String			className	= node.getAttribute( "class" );
-		final NodeList			argList		= node.getElementsByTagName( "arg" );
-		final NodeList			outList		= node.getElementsByTagName( "outputs" );
-		final NodeList			specialList	= node.getElementsByTagName( "special" );
-		final Arg[]				args		= new Arg[ argList.getLength() ];
-		final Map				specials;
+		final Set<Object>			rates		= new HashSet<Object>();
+		final String				className	= node.getAttribute( "class" );
+		final NodeList				argList		= node.getElementsByTagName( "arg" );
+		final NodeList				outList		= node.getElementsByTagName( "outputs" );
+		final NodeList				specialList	= node.getElementsByTagName( "special" );
+		final Arg[]					args		= new Arg[ argList.getLength() ];
+		final Map<String, Integer>	specials;
 		
 		Element					elem;
 		String					val, name;
@@ -665,14 +667,14 @@ public class UGenInfo
 		if( (outputType == OUTPUT_FIXED) && (outputVal == -1) ) outputVal = 1;	// default
 		
 		if( specialList.getLength() > 0 ) {
-			specials = new HashMap();
+			specials = new HashMap<String,Integer>();
 			for( int i = 0; i < specialList.getLength(); i++ ) {
 				elem	= (Element) specialList.item( i );
 				name	= elem.getAttribute( "name" );
 				val		= elem.getAttribute( "idx" );
 				try {
 					n	= Integer.parseInt( val );
-					specials.put( name, new Integer( n ));
+					specials.put( name, Integer.valueOf( n ));
 				}
 				catch( NumberFormatException e1 ) {
 					System.err.println( className + "(arg:" + name + ") : " + e1.getClass().getName() +
