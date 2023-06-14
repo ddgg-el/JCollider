@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+  	<groupId>de.sciss</groupId>
+  	<artifactId>JCollider</artifactId>
+  	<version>1.0.1-SNAPSHOT</version>
+
+	<name>JCollider</name>
+	<description>A Java client for SuperCollider</description>
+	<url>https://github.com/Sciss/JCollider</url>
+
+	<licenses>
+		<license>
+		<name>LGPL v2.1+</name>
+		<url>http://www.gnu.org/licenses/lgpl-2.1.txt</url>
+		</license>
+	</licenses>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.version>11</java.version>
+		<maven.compiler.source>11</maven.compiler.source>
+		<maven.compiler.target>11</maven.compiler.target>
+		<maven.compiler.release>11</maven.compiler.release>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>de.sciss</groupId>
+			<artifactId>netutil</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>de.sciss</groupId>
+			<artifactId>scisslib</artifactId>
+			<version>1.1.5</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.10.1</version>
+				<configuration>
+					<source>11</source>
+					<target>11</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.0.0</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.5.0</version>
+				<configuration>
+					<doclint>-missing</doclint>
+					<tags>
+						<tag>
+							<name>todo</name>
+							<!-- todo tag for all places -->
+							<placement>a</placement>
+							<head>To do something:</head>
+						</tag>
+						<tag>
+							<name>warning</name>
+							<placement>a</placement>
+							<head>WARNING</head>
+						</tag>
+						<tag>
+							<name>synchronization</name>
+							<placement>a</placement>
+							<head>Synchronized</head>
+						</tag>
+					</tags>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<scm>
+		<url>git@github.com:Sciss/JCollider.git</url>
+		<connection>scm:git:git@github.com:Sciss/JCollider.git</connection>
+	</scm>
+
+	<developers>
+		<developer>
+		<id>sciss</id>
+		<name>Hanns Holger Rutz</name>
+		<url>http://www.sciss.de</url>
+		</developer>
+	</developers>
+</project>

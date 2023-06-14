@@ -9,30 +9,33 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 
 public class Main {
-    public static void main( String args[] )
+    public static void main(String[] args)
     {
         final String demoClass;
 
         if( args.length == 1 ) {
             final String arg1 = args[ 0 ];
-            if( arg1.equals( "--test1" )) {
-                demoClass = "de.sciss.jcollider.test.Demo";
-            } else if( arg1.equals( "--test2" )) {
-                demoClass = "de.sciss.jcollider.test.MotoRevCtrl";
-            } else if( arg1.equals( "--test3" )) {
-                demoClass = "de.sciss.jcollider.test.BusTests";
-            } else if( arg1.equals( "--bindefs" )) {
-                try {
-                    UGenInfo.readDefinitions();
-                    UGenInfo.writeBinaryDefinitions( new File("de/sciss/jcollider/ugendefs.bin"));
-                }
-                catch( IOException e1 ) {
-                    e1.printStackTrace();
-                }
-                demoClass = null;
-                System.exit( 0 );
-            } else {
-                demoClass = null;
+            switch (arg1) {
+                case "--test1":
+                    demoClass = "de.sciss.jcollider.test.Demo";
+                    break;
+                case "--test2":
+                    demoClass = "de.sciss.jcollider.test.MotoRevCtrl";
+                    break;
+                case "--test3":
+                    demoClass = "de.sciss.jcollider.test.BusTests";
+                    break;
+                case "--bindefs":
+                    try {
+                        UGenInfo.readDefinitions();
+                        UGenInfo.writeBinaryDefinitions(new File("de/sciss/jcollider/ugendefs.bin"));
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                default:
+                    demoClass = null;
+                    System.exit(0);
+                    break;
             }
         } else {
             demoClass = null;

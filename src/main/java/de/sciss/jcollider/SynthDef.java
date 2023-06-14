@@ -113,7 +113,7 @@ import de.sciss.net.OSCMessage;
  *	long        time;
  *	
  *	f = null;
- *	for( int i = 0; i < 4; i++ ) {
+ *	for( int i = 0; i &#60; 4; i++ ) {
  *	    g = UGen.ar( "*", UGen.ar( "LFSaw", UGen.kr( "midicps", UGen.kr( "MulAdd",
  *	        UGen.kr( "LFPulse", UGen.ir( 0.06f ), UGen.ir( 0 ), UGen.ir( 0.5f )),
  *	            UGen.ir( 2 ), UGen.array( UGen.ir( 34 + r.nextFloat() * 0.2f ),
@@ -132,7 +132,7 @@ import de.sciss.net.OSCMessage;
  *	    def.send( myServer, synth.newMsg( myServer.asTarget(),
  *	        new String[] { "resinv" }, new float[] { 0.98f }));
  *	    time = System.currentTimeMillis();
- *	    for( int i = 500; i < 5000; i += 250 ) {
+ *	    for( int i = 500; i &#60; 5000; i += 250 ) {
  *	        bndl = new OSCBundle( time + i );
  *	        bndl.addPacket( synth.setMsg( "resinv", r.nextFloat() * 0.8f + 0.015f ));
  *	        myServer.sendBundle( bndl );

@@ -66,7 +66,8 @@ implements ServerListener
 				fs + "usr" + fs + "local" + fs + "bin",
 				fs + "usr" + fs + "bin",
 				"C:\\Program Files\\SC3",
-				"C:\\Program Files\\SuperCollider_f"
+				"C:\\Program Files\\SuperCollider_f",
+				fs + "Applications" + fs + "SuperColliderARM.app" + fs + "Contents" + fs + "Resources"
 			});
 			if( f != null ) Server.setProgram( f.getAbsolutePath() );
 			server.addListener( this );

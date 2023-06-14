@@ -183,6 +183,7 @@ implements Constants
 	 * 	Set the value of a monophonic bus.
 	 * 	For multichannel busses, use
 	 * 	setnMsg instead.
+	 * @param value
 	 */
 	public OSCMessage setMsg( float value )
 	{
@@ -295,7 +296,13 @@ implements Constants
 		return new OSCMessage( "/c_fill", new Object[] {
 			Integer.valueOf( getIndex() + offset ), Integer.valueOf( numChans ), Float.valueOf( value )});
 	}
-	
+
+	/**
+	 * Sets a value to an instance of a Bus (also Multichannel)
+	 * @param numChans
+	 * @param values
+	 * @return Returns an OSCMessage with offset numChan values
+	 */
 	public OSCMessage fillMsg( int[] numChans, float[] values )
 	{
 		final int numEntries = numChans.length;
@@ -461,7 +468,10 @@ implements Constants
 		}
 		return new OSCMessage( "/c_getn", args );
 	}
-	
+
+	/**
+	 * Frees the Bus
+	 */
 	public void free()
 	{
 		final int idx = getIndex();

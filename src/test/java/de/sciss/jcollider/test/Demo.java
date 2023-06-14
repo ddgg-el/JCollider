@@ -3,11 +3,11 @@
 //
 //	This demonstrates some features of JCollider. This demo
 //	class is absolutely free and comes with absolutely no
-//	warranties. JColider itself is released under the GNU GPL
+//	warranties. JCollider itself is released under the GNU GPL
 //	(see separate license file).
 //
-//	To launch the compiled class, CD into the JColider folder
-//	and run the JSuperColiderDemo.sh shell script.
+//	To launch the compiled class, CD into the JCollider folder
+//	and run the JSuperColliderDemo.sh shell script.
 //
 //  Created by Hanns Holger Rutz on 10.09.05.
 //
@@ -317,17 +317,16 @@ implements FileFilter, ServerListener, Constants
 	{
 		List<SynthDef>	defs;
 		SynthDef		def;
-	
-		for( int i = 0; i < defTables.length; i++ ) {
-			defs = defTables[ i ].getDefs();
-			for( int j = 0; j < defs.size(); j++ ) {
-				def = defs.get( j );
+
+		for (SynthDefTable defTable : defTables) {
+			defs = defTable.getDefs();
+			for (SynthDef synthDef : defs) {
+				def = synthDef;
 				try {
-					def.send( server );
-				}
-				catch( IOException e1 ) {
-					System.err.println( "Sending Def " + def.getName() + " : " +
-						e1.getClass().getName() + " : " + e1.getLocalizedMessage() );
+					def.send(server);
+				} catch (IOException e1) {
+					System.err.println("Sending Def " + def.getName() + " : " +
+							e1.getClass().getName() + " : " + e1.getLocalizedMessage());
 				}
 			}
 		}
@@ -336,15 +335,15 @@ implements FileFilter, ServerListener, Constants
 	private static File findFile( String fileName, String[] folders )
 	{
 		File f;
-	
-		for( int i = 0; i < folders.length; i++ ) {
-			f = new File( folders[ i ], fileName );
-			if( f.exists() ) return f;
+
+		for (String folder : folders) {
+			f = new File(folder, fileName);
+			if (f.exists()) return f;
 		}
 		return null;
 	}
 
-    public static void main( String args[] )
+    public static void main(String[] args)
 	{
 		SwingUtilities.invokeLater( new Runnable() {
 			public void run()
@@ -709,20 +708,17 @@ implements FileFilter, ServerListener, Constants
 					if( o instanceof List ) {
 						fileList	= (List<File>) o;
 						collDefs	= new ArrayList<SynthDef>();
-						for( int i = 0; i < fileList.size(); i++ ) {
-							f = fileList.get( i );
+						for (File file : fileList) {
+							f = file;
 							try {
-								if( SynthDef.isDefFile( f )) {
-									defs = SynthDef.readDefFile( f );
-									for( int j = 0; j < defs.length; j++ ) {
-										collDefs.add( defs[ j ]);
-									}
+								if (SynthDef.isDefFile(f)) {
+									defs = SynthDef.readDefFile(f);
+									Collections.addAll(collDefs, defs);
 								} else {
-									System.err.println( "Not a synth def file : " + f.getName() );
+									System.err.println("Not a synth def file : " + f.getName());
 								}
-							}
-							catch( IOException e1 ) {
-								JCollider.displayError( enc_this, e1, "Drop File" );
+							} catch (IOException e1) {
+								JCollider.displayError(enc_this, e1, "Drop File");
 							}
 						}
 						if( !collDefs.isEmpty() ) {
@@ -743,8 +739,8 @@ implements FileFilter, ServerListener, Constants
 		
 		public boolean canImport( JComponent c, DataFlavor[] flavors )
 		{
-			for( int i = 0; i < flavors.length; i++ ) {
-				if( flavors[i].equals( DataFlavor.javaFileListFlavor )) return true;
+			for (DataFlavor flavor : flavors) {
+				if (flavor.equals(DataFlavor.javaFileListFlavor)) return true;
 			}
 			return false;
 		}

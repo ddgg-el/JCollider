@@ -1,9 +1,6 @@
 # JCollider
 
-[![Build Status](https://travis-ci.org/Sciss/JCollider.svg?branch=master)](https://travis-ci.org/Sciss/JCollider)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/de.sciss/jcollider/badge.svg)](https://maven-badges.herokuapp.com/maven-central/de.sciss/jcollider)
-
-__Note:__ This project is not being actively developed any longer. See [ScalaCollider](https://github.com/Sciss/ScalaCollider) for an actively maintained SuperCollider client for the Scala programming language instead.
+__Note:__ This project is an attempt to revive the JCollider Library. See [ScalaCollider](https://github.com/Sciss/ScalaCollider) for an actively maintained SuperCollider client for the Scala programming language instead.
 
 ## Statement
 
@@ -19,15 +16,33 @@ JCollider is platform independent, but requires a Java 1.6 SE runtime environmen
 
 ## download and building
 
+### IMPORTANT! this repository is not ready for release (yet)  
 The current source code can be downloaded here:
 
 - https://github.com/Sciss/JCollider
 
+### SBT
 The project builds with [sbt](http://www.scala-sbt.org/) now. To compile, run `sbt compile`. To see the demo, run `sbt test:run`.
 
-The demo opens two frames, one containing a list of synth defs, the other one being a small server window just like you know from sclang. first check, that the path name to the application is correct, alternatively start the server manually before launching the demo. now select a synth definition from the tables and press the play button. to stop all synths, press the stop button. to view the synth def, press one of the next two buttons. to see a tree of all known nodes, press the right most button.
+__TO BE FIXED__: The demo now detects multiple classes and let you choose between 
+```
+ [1] de.sciss.jcollider.test.Demo
+ [2] de.sciss.jcollider.test.Main
+```
+both classes have a GUI which does not start running `sbt test:run` 
 
-In the demo, `RingMod` is an insert effects which have to be started before starting an oscillator synth def.
+### Maven
+the project can be build with Maven. To compile, run `mvn compiler:compile` 
+
+### Test
+The tests work if using an IDE (such as IntelliJ IDEA or VSCode) and running `main()` directly from the class file.
+Keepl in mind that `test.Main.main()` needs an argument to run:
+```
+--test1 (to run Demo)
+--test2 (to run MotoRevCtrl)
+--test3" (to run BusTests)
+--bindefs (to test the UGenInfo.readDefinitions() and the UGenInfo.writeBinaryDefinitions(new File("de/sciss/jcollider/ugendefs.bin")) functionalities
+```
 
 ## linking
 

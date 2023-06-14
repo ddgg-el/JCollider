@@ -88,7 +88,7 @@ implements Constants, TreeNode
 	 *	This name is used in print out
 	 *	or GUI representation
 	 *
-	 *	@param	name	a name for the node, or <code>null</node>
+	 *	@param	name	a name for the node, or <code>null</code>
 	 */
 	public void setName( String name )
 	{

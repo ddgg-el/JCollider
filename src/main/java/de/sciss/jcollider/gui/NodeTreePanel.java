@@ -125,6 +125,9 @@ implements TreeSelectionListener, TreeModelListener
 	
 	/**
 	 *	Creates a panel with default gadgets.
+	 *
+	 * @param nw the NodeWatcher used for monitoring
+	 * @param rootNode the Root Element to display in the tree
 	 */
 	public NodeTreePanel( NodeWatcher nw, Node rootNode )
 	{

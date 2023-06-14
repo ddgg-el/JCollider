@@ -11,3 +11,5 @@ wiki/
 .vscode/
 metals.sbt
 libs/
+bin/
+.bsp/

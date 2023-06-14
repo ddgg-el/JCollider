@@ -294,7 +294,7 @@ implements EventManager.Processor //, PropertyChangeListener
 	 *  Return the number currently displayed
 	 *
 	 *  @return		the number displayed in the gadget.
-	 *				if the <code>NumberSpace</space> is
+	 *				if the <code>NumberSpace</code> is
 	 *				integer, a <code>Long</code> is returned,
 	 *				otherwise a <code>Double</code>.
 	 *

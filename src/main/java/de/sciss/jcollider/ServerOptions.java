@@ -282,8 +282,11 @@ public class ServerOptions
 	}
 
 	/**
+	 * Set the transport protocol
+	 *
 	 *	@throws	IllegalArgumentException	if <code>protocol</code> is not
 	 *										<code>UDP</code>
+	 * @param protocol either "udp" or "tcp"
 	 */
 	public void setProtocol( String protocol )
 	{

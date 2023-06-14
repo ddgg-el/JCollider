@@ -437,6 +437,7 @@ implements Constants
 	/**
 	 *	Creates an OSC <code>/b_alloc</code> message to allocate the buffer created with the basic <code>new</code> constructor.
 	 *
+	 *  @throws IOException
 	 *	@return	the message to be sent to the server
 	 *
 	 *	@see	#Buffer( Server, int, int )
@@ -453,7 +454,7 @@ implements Constants
 	 *	@param	completionMsg	an <code>OSCMessage</code> which is processed by the server
 	 *							when the allocation is complete. can be <code>null</code>.
 	 *	@return					the message to be sent to the server
-	 *
+	 *  @throws 	IOException
 	 *	@see	#Buffer( Server, int, int )
 	 */
 	public OSCMessage allocMsg( OSCMessage completionMsg )
@@ -599,6 +600,7 @@ implements Constants
 	/**
 	 *	Creates an OSC <code>/b_allocRead</code> message to allocate the buffer created with the basic <code>new</code> constructor,
 	 *	by reading in a sound file.
+	 *  @throws IOException
 	 *
 	 *	@param		path	the path to the sound file
 	 *	@return				the message to be sent to the server
@@ -615,6 +617,7 @@ implements Constants
 	 *	Creates an OSC <code>/b_allocRead</code> message to allocate the buffer created with the basic <code>new</code> constructor,
 	 *	by reading in a sound file.
 	 *
+	 *  @throws 		IOException
 	 *	@param		path		the path to the sound file
 	 *	@param		startFrame	starting frame in the sound file
 	 *	@return					the message to be sent to the server
@@ -638,7 +641,7 @@ implements Constants
 	 *	@param		numFrames	the number of frames to read, which equals the number of frames
 	 *							allocated for the buffer
 	 *	@return					the message to be sent to the server
-	 *
+	 *  @throws 	IOException
 	 *	@see	#Buffer( Server, int, int )
 	 *
 	 *	@warning	<code>long startFrame</code> is truncated to 32bit by <code>OSCMessage</code> for now
@@ -660,7 +663,7 @@ implements Constants
 	 *	@param		completionMsg	an <code>OSCMessage</code> which is processed by the server
 	 *								when the allocation and reading is complete. can be <code>null</code>.
 	 *	@return						the message to be sent to the server
-	 *
+	 *  @throws 	IOException
 	 *	@see	#Buffer( Server, int, int )
 	 *
 	 *	@warning	<code>long startFrame</code> is truncated to 32bit by <code>OSCMessage</code> for now
@@ -697,7 +700,7 @@ implements Constants
 	 *								allocated for the buffer
 	 *	@param		channels		an array of channel indices to read (starting from <code>0</code>)
 	 *	@return						the message to be sent to the server
-	 *
+	 *  @throws 	IOException
 	 *	@see	#Buffer( Server, int, int )
 	 *
 	 *	@warning	<code>long startFrame</code> is truncated to 32bit by <code>OSCMessage</code> for now
@@ -720,6 +723,7 @@ implements Constants
 	 *	@param		completionMsg	an <code>OSCMessage</code> which is processed by the server
 	 *								when the allocation and reading is complete. can be <code>null</code>.
 	 *	@return						the message to be sent to the server
+	 *  @throws		IOException
 	 *
 	 *	@see	#Buffer( Server, int, int )
 	 *
@@ -1142,8 +1146,10 @@ implements Constants
 	 *	starting at a given frame in the file,
 	 *	closing the file after reading.
 	 *
-	 *	@param		path		the path to the sound file
-	 *	@return					the message to be sent to the server
+	 *	@param		path			the path to the sound file
+	 *  @param 		fileStartFrame	the frame index in the sound file to start reading from
+	 *
+	 *	@return						the message to be sent to the server
 	 *
 	 *	@warning	<code>long fileStartFrame</code> is truncated to 32bit by <code>OSCMessage</code> for now
 	 */
@@ -1852,6 +1858,11 @@ implements Constants
 	}
 	
 	/**
+	 *  A convenience method to cue a soundfile into the buffer
+	 *
+	 *  @param 		server	The Server on which to allocate the buffer.
+	 *  @param 		path	A String representing the path of the soundfile to be read
+	 *  @return				a Buffer
 	 *	@warning	numChannels defaults to 1 (not 2 as in sclang) !!
 	 */
 	public static Buffer cueSoundFile( Server server, String path )
@@ -1861,6 +1872,13 @@ implements Constants
 	}
 
 	/**
+	 *  @see #cueSoundFile(Server, String)
+	 *  @param 	server
+	 *  @param 	path
+	 *  @param 	startFrame
+	 *
+	 * @throws IOException
+	 * @return 	a Buffer
 	 *	@warning	numChannels defaults to 1 (not 2 as in sclang) !!
 	 */
 	public static Buffer cueSoundFile( Server server, String path, long startFrame )
@@ -1962,7 +1980,14 @@ implements Constants
 	{
 		getServer().sendMsg( fillMsg( startAt, numSamples, value ));
 	}
-	
+
+	/**
+	 * Starting at the index startAt, set the next numSamples to value. Additional ranges may be included in the same message
+	 * @param startAt		can be a List of Integers
+	 * @param numSamples	can be a List of Integers
+	 * @param value			can be a List of floats
+	 * @return				an OscMessage "/b_fill"
+	 */
 	public OSCMessage fillMsg( int[] startAt, int[] numSamples, float[] value )
 	{
 		final Object[] args = new Object[ startAt.length * 3 + 1 ];
@@ -1977,29 +2002,52 @@ implements Constants
 		return( new OSCMessage( "/b_fill", args ));
 	}
 
-	// close a file, write header, after DiskOut usage
+	/**
+	 *  close a file, write header, after DiskOut usage
+	 * @throws IOException
+	 */
 	public void close()
 	throws IOException
 	{
 		close( null );
 	}
 
+	/**
+	 * Like close but send immediately an OSCMessage to the Server
+	 * @param completionMsg an OSCMessage
+	 * @throws IOException
+	 */
 	public void close( OSCMessage completionMsg )
 	throws IOException
 	{
 		getServer().sendMsg( closeMsg( completionMsg ));
 	}
-	
+
+	/**
+	 * @see #closeMsg(OSCMessage)
+	 * @return
+	 */
 	public OSCMessage closeMsg()
 	{
 		return closeMsg( null );
 	}
 
+	/**
+	 * Sends a "/b_close" OSCMessage to the Server
+	 * @param completionMsg
+	 * @return
+	 */
 	public OSCMessage closeMsg( OSCMessage completionMsg )
 	{
 		return simpleMsg( "/b_close", completionMsg );
 	}
-	
+
+	/**
+	 * Send an OSCMessage to the Server
+	 * @param cmdName			an OSC like address ex. "/test"
+	 * @param completionMsg
+	 * @return
+	 */
 	private OSCMessage simpleMsg( String cmdName, OSCMessage completionMsg )
 	{
 		final Object[] args = completionMsg == null ?
@@ -2008,37 +2056,64 @@ implements Constants
 
 		return( new OSCMessage( cmdName, args ));
 	}
-	
+
+	/**
+	 * @see #free(OSCMessage)
+	 * @throws IOException
+	 */
 	public void free()
 	throws IOException
 	{
 		free( null );
 	}
 
+	/**
+	 * Sends a freeMsg to the server
+	 * @param completionMsg
+	 * @throws IOException
+	 */
 	public void free( OSCMessage completionMsg )
 	throws IOException
 	{
 		getServer().sendMsg( freeMsg( completionMsg ));
 	}
-	
+
+	/**
+	 * @see #freeMsg(OSCMessage)
+	 * @return
+	 */
 	public OSCMessage freeMsg()
 	{
 		return freeMsg( null );
 	}
 
+	/**
+	 * Sends a "/b_free" message to the Server
+	 * @param completionMsg
+	 * @return
+	 */
 	public OSCMessage freeMsg( OSCMessage completionMsg )
 	{
 		getServer().freeBuf( getBufNum() );
 		getServer().getBufferAllocator().free( getBufNum() );
 		return simpleMsg( "/b_free", completionMsg );
 	}
-	
+
+	/**
+	 * Sets all the values of the Buffer to 0
+	 * @throws IOException
+	 */
 	public void zero()
 	throws IOException
 	{
 		zero( null );
 	}
 
+	/**
+	 * @see #zero()
+	 * @param completionMsg
+	 * @throws IOException
+	 */
 	public void zero( OSCMessage completionMsg )
 	throws IOException
 	{

@@ -53,7 +53,7 @@ public abstract class JCollider
 	 *					run the demos. &quot;--bindefs&quot; to create
 	 *					a binary def file from the xml descriptions
 	 */
-	public static void main(String args[]) {
+	public static void main(String[] args) {
 		System.err.println("\nJCollider v" + VERSION + "\n" +
 				getCopyrightString() + "\n\n" +
 				getCreditsString() + "\n\n  " +

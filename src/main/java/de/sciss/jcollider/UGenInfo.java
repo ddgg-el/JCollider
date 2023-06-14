@@ -140,7 +140,7 @@ public class UGenInfo
 	public final Map<String, Integer>	specials;		// maps String special name to Integer( specialIndex ) ; may be null
 	/**
 	 *	Defines how the number of outputs is
-	 *	determined. One of <code>FIXED</code>, <code>ARG</code> or <code>ARRAYSIZE<code>
+	 *	determined. One of <code>FIXED</code>, <code>ARG</code> or <code>ARRAYSIZE</code>
 	 */
 	public final int		outputType;		// (fixed|arg|arraySize|pre)
 	/**

@@ -20,14 +20,23 @@ lazy val basicJavaOptions = Seq("-source", "11", "-encoding", "utf8")
 
 javacOptions    ++= basicJavaOptions ++ Seq("-target", "11", "-Xlint")
 
-javacOptions in (Compile, doc) := basicJavaOptions
+lazy val basicJavaDocOptions = Seq("-Xdoclint:missing")
+
+Compile / doc / javacOptions := basicJavaOptions ++ basicJavaDocOptions
 
 libraryDependencies ++= Seq(
   "de.sciss" % "netutil"  % "1.1.0",
   "de.sciss" % "scisslib" % "1.1.5"
 )
 
-mainClass in (Compile, run) := Some("de.sciss.jcollider.JCollider")
+// Configure the resource directory for Test
+// test / resourceDirectory := baseDirectory.value / "src" / "main" / "resources"
+//resourceDirectory := baseDirectory.value / "src" / "main" / "resources"
+
+
+Compile / run / mainClass := Some("de.sciss.jcollider.JCollider")
+
+
 
 // ---- publishing ----
 
@@ -40,7 +49,7 @@ publishTo :=
     "Sonatype Releases"  at "https://oss.sonatype.org/service/local/staging/deploy/maven2"
   )
 
-publishArtifact in Test := false
+Test / publishArtifact := false
 
 pomIncludeRepository := { _ => false }
 
